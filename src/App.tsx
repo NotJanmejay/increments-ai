@@ -2,24 +2,84 @@ import './App.css'
 import React from 'react'
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, TextField, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from '@mui/material';
 import { useDropzone } from 'react-dropzone';
+import toast from 'react-hot-toast';
 
-function AddStudentComponent() {
+function AddStudentComponent({ setStudents }: { setStudents: any }) {
+  const [studentData, setStudentData] = React.useState({
+    name: '',
+    email: '',
+    class: '',
+    contact: '',
+    parentEmail: '',
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setStudentData({
+      ...studentData,
+      [name]: value,
+    });
+  };
+
+  const handleAddStudent = () => {
+    setStudents((prevStudents: any) => [...prevStudents, studentData]);
+    // Clear form after adding student
+    setStudentData({
+      name: '',
+      email: '',
+      class: '',
+      contact: '',
+      parentEmail: '',
+    });
+    toast.success("Student Added Successfully.")
+  };
+
   return (
     <div className='option-container'>
       <div className="title">Add Student</div>
       <p>Add your students here to generate their credentials</p>
       <div id="input-fields">
-        <input type="text" placeholder='Name' />
-        <input type="email" placeholder='Email Address' />
-        <input type="text" placeholder='Class' />
-        <input type="phone" placeholder='Contact Number' />
-        <input type="email" placeholder='Parent Email Address' />
+        <input
+          type="text"
+          name="name"
+          placeholder='Name'
+          value={studentData.name}
+          onChange={handleChange}
+        />
+        <input
+          type="email"
+          name="email"
+          placeholder='Email Address'
+          value={studentData.email}
+          onChange={handleChange}
+        />
+        <input
+          type="text"
+          name="class"
+          placeholder='Class'
+          value={studentData.class}
+          onChange={handleChange}
+        />
+        <input
+          type="tel"
+          name="contact"
+          placeholder='Contact Number'
+          value={studentData.contact}
+          onChange={handleChange}
+        />
+        <input
+          type="email"
+          name="parentEmail"
+          placeholder='Parent Email Address'
+          value={studentData.parentEmail}
+          onChange={handleChange}
+        />
       </div>
       <div className='button-section'>
-        <button>Add Student</button>
+        <button onClick={handleAddStudent}>Add Student</button>
       </div>
     </div>
-  )
+  );
 }
 
 function UploadDocument() {
@@ -79,24 +139,7 @@ function UploadDocument() {
     </div>
   );
 }
-function StudentManager() {
-  const [students, setStudents] = React.useState([
-    {
-      name: "Janmejay Chatterjee",
-      email: "janmejaychatterjee@gmail.com",
-      class: "7th Sem",
-      contact: "9016589044",
-      parentEmail: "delsionrouge@gmail.com"
-    },
-    {
-      name: "John Doe",
-      email: "johndoe@gmail.com",
-      class: "5th Sem",
-      contact: "9123456789",
-      parentEmail: "parentdoe@gmail.com"
-    },
-  ]);
-
+function StudentManager({ students, setStudents }: { students: any, setStudents: any }) {
   const [open, setOpen] = React.useState(false);
   const [editStudent, setEditStudent] = React.useState<any>(null);
 
@@ -114,12 +157,14 @@ function StudentManager() {
 
   // Update student details
   const handleSave = () => {
+    //@ts-ignore
     setStudents(students.map(s => (s.email === editStudent.email ? editStudent : s)));
     handleClose();
   };
 
   // Delete a student
   const handleDelete = (email: any) => {
+    //@ts-ignore
     setStudents(students.filter(s => s.email !== email));
   };
 
@@ -141,7 +186,7 @@ function StudentManager() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {students.map((row) => (
+            {students.map((row: any) => (
               <TableRow key={row.email} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                 <TableCell component="th" scope="row">{row.name}</TableCell>
                 <TableCell align="right">{row.email}</TableCell>
@@ -211,6 +256,13 @@ function StudentManager() {
 
 function App() {
   const [currentSection, setCurrentSection] = React.useState<String>("add-student")
+  const [students, setStudents] = React.useState<any>([{
+    name: "Janmejay Chatterjee",
+    email: "janmejaychatterjee@gmail.com",
+    class: "7th Sem",
+    contact: "9016589044",
+    parentEmail: "delsionrouge@gmail.com"
+  }])
   return (
     <main>
       <nav id="teacher-nav">
@@ -227,7 +279,7 @@ function App() {
         </div>
         <div id="right-pane">
           {
-            currentSection === "add-student" ? <AddStudentComponent /> : currentSection === "upload-documents" ? <UploadDocument /> : <StudentManager />
+            currentSection === "add-student" ? <AddStudentComponent setStudents={setStudents} /> : currentSection === "upload-documents" ? <UploadDocument /> : <StudentManager students={students} setStudents={setStudents} />
           }
         </div>
       </section>
