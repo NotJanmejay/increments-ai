@@ -1,42 +1,123 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+/* Navigation bar */
+#teacher-nav {
+    height: 7vh;
+    width: 100vw;
+    border-bottom: 1px solid rgba(112, 128, 144, 0.3);
+    display: flex;
+    align-items: center;
+    padding: 0 36px;
+    gap: 32px;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.msbc-ai {
+    font-weight: bold;
+    font-size: 20px;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+#teacher-nav div {
+    opacity: 0.5;
+    font-weight: 700;
+    font-size: 14px;
+    transition: opacity 0.9s cubic-bezier(0.075, 0.82, 0.165, 1);
+    cursor: pointer;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+#teacher-nav div:hover {
+    opacity: 0.9;
 }
 
-.card {
-  padding: 2em;
+/* Section layout */
+section {
+    padding: 24px 36px;
+    display: flex;
 }
 
-.read-the-docs {
-  color: #888;
+/* Left pane */
+#left-pane {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+#left-pane h1 {
+    margin-top: 24px;
+    font-size: 36px;
+    opacity: 0.9;
+    margin-bottom: 50px;
+}
+
+#left-pane p {
+    opacity: 0.7;
+    cursor: pointer;
+    transition: opacity 0.9s cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+
+#left-pane p:hover {
+    opacity: 1;
+}
+
+/* Right pane */
+#right-pane {
+    margin-top: 10vh;
+    margin-left: 20vw;
+}
+
+.option-container {
+    border: 1px solid rgba(112, 128, 144, 0.3);
+    border-radius: 8px;
+    min-width: 40vw;
+    padding: 30px;
+}
+
+.option-container .title {
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.option-container p {
+    margin-top: 4px;
+    font-size: 16px;
+    opacity: 0.8;
+}
+
+/* Input fields */
+#input-fields {
+    margin-top: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+#input-fields input {
+    border: 1px solid rgba(112, 128, 144, 0.3);
+    border-radius: 4px;
+    padding: 8px 12px;
+    font-size: 14px;
+}
+
+#input-fields input:focus {
+    border: 1px solid red;
+}
+
+/* Button section */
+.button-section {
+    border-top: 1px solid rgba(112, 128, 144, 0.3);
+    margin-top: 16px;
+}
+
+.button-section button {
+    margin-top: 16px;
+    border-radius: 4px;
+    border: none;
+    padding: 8px 16px;
+    background-color: black;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 400ms cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+
+.button-section button:hover {
+    background-color: rgb(48, 47, 47);
+   
 }
