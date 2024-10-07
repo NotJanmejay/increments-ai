@@ -17,11 +17,8 @@
     position: relative;
 }
 
-#chatbot-container h1{
-    margin-top: 5vh;
-}
 
-#chat-input{
+#chat-input-form{
     position: fixed;
     bottom: 5vh;
     border-radius: 32px;
@@ -31,6 +28,15 @@
     width: 40%;
     padding: 0 1vw;
     display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+#chat-input{
+   border: none;
+   outline: none;
+   background-color: rgb(241, 241, 241);
+   width: 90%;
 }
 
 #chat-input:focus{
@@ -38,3 +44,16 @@
     outline: none;
 }
 
+@keyframes spinner {
+    0%{
+        transform: rotate(0deg);
+    }
+    100%{
+        transform: rotate(360deg);
+    }
+
+}
+
+.loader{
+    animation: spinner 1s linear infinite ;
+}
