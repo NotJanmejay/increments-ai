@@ -1,0 +1,40 @@
+import AddStudentComponent from "../components/addStudent"
+import StudentManager from "../components/studentManager"
+import UploadDocument from "../components/uploadDocument"
+import "../styles/TeacherAdmin.css"
+import React from 'react'
+
+function TeacherAdmin() {
+  const [currentSection, setCurrentSection] = React.useState<String>("add-student")
+  const [students, setStudents] = React.useState<any>([{
+    name: "Janmejay Chatterjee",
+    email: "janmejaychatterjee@gmail.com",
+    class: "7th Sem",
+    contact: "9016589044",
+    parentEmail: "delsionrouge@gmail.com"
+  }])
+  return (
+    <main>
+      <nav id="teacher-nav">
+        <span className='msbc-ai'>MSBC AI Division</span>
+        <div>Dashboard</div>
+        <div>Contact</div>
+      </nav>
+      <section>
+        <div id="left-pane">
+          <h1>Teacher Portal</h1>
+          <p onClick={() => setCurrentSection("add-student")}>Add Students</p>
+          <p onClick={() => setCurrentSection("upload-documents")}>Upload Documents</p>
+          <p onClick={() => setCurrentSection("student-manager")}>Student Manager</p>
+        </div>
+        <div id="right-pane">
+          {
+            currentSection === "add-student" ? <AddStudentComponent setStudents={setStudents} /> : currentSection === "upload-documents" ? <UploadDocument /> : <StudentManager students={students} setStudents={setStudents} />
+          }
+        </div>
+      </section>
+    </main>
+  )
+}
+
+export default TeacherAdmin;

@@ -1,0 +1,82 @@
+import React from "react"
+import toast from 'react-hot-toast';
+
+function AddStudentComponent({ setStudents }: { setStudents: any }) {
+    const [studentData, setStudentData] = React.useState({
+        name: '',
+        email: '',
+        class: '',
+        contact: '',
+        parentEmail: '',
+    });
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setStudentData({
+            ...studentData,
+            [name]: value,
+        });
+    };
+
+    const handleAddStudent = () => {
+        setStudents((prevStudents: any) => [...prevStudents, studentData]);
+        // Clear form after adding student
+        setStudentData({
+            name: '',
+            email: '',
+            class: '',
+            contact: '',
+            parentEmail: '',
+        });
+        toast.success("Student Added Successfully.")
+    };
+
+    return (
+        <div className='option-container'>
+            <div className="title">Add Student</div>
+            <p>Add your students here to generate their credentials</p>
+            <div id="input-fields">
+                <input
+                    type="text"
+                    name="name"
+                    placeholder='Name'
+                    value={studentData.name}
+                    onChange={handleChange}
+                />
+                <input
+                    type="email"
+                    name="email"
+                    placeholder='Email Address'
+                    value={studentData.email}
+                    onChange={handleChange}
+                />
+                <input
+                    type="text"
+                    name="class"
+                    placeholder='Class'
+                    value={studentData.class}
+                    onChange={handleChange}
+                />
+                <input
+                    type="tel"
+                    name="contact"
+                    placeholder='Contact Number'
+                    value={studentData.contact}
+                    onChange={handleChange}
+                />
+                <input
+                    type="email"
+                    name="parentEmail"
+                    placeholder='Parent Email Address'
+                    value={studentData.parentEmail}
+                    onChange={handleChange}
+                />
+            </div>
+            <div className='button-section'>
+                <button onClick={handleAddStudent}>Add Student</button>
+            </div>
+        </div>
+    );
+}
+
+export default AddStudentComponent;

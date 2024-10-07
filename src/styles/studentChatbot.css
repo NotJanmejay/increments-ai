@@ -1,0 +1,40 @@
+
+
+#chatbot-nav{
+    height:5vh;
+    display: flex;
+    align-items: center;
+    justify-content: space-between; 
+    padding: 0 2vw
+}
+
+#chatbot-container{
+    padding: 0 30vw;
+    height: calc(100% - 5vh);
+    display: flex;
+    flex-direction: column;
+    gap: 2vh;
+    position: relative;
+}
+
+#chatbot-container h1{
+    margin-top: 5vh;
+}
+
+#chat-input{
+    position: fixed;
+    bottom: 5vh;
+    border-radius: 32px;
+    border: none;
+    background-color: rgb(241, 241, 241);
+    height: 50px;
+    width: 40%;
+    padding: 0 1vw;
+    display: flex;
+}
+
+#chat-input:focus{
+    border: none;
+    outline: none;
+}
+
