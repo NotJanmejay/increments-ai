@@ -93,6 +93,7 @@ section {
     border-radius: 4px;
     padding: 8px 12px;
     font-size: 14px;
+    margin-bottom: 8px;
 }
 
 #input-fields input:focus {
@@ -120,4 +121,19 @@ section {
 .button-section button:hover {
     background-color: rgb(48, 47, 47);
    
+}
+
+
+
+.option-container label{
+    font-size: 14px;
+}
+
+.option-container textarea{
+    border: 1px solid rgba(112, 128, 144, 0.3);
+    border-radius: 4px;
+    height: 10vh;
+    padding: 8px 12px;
+    font-size: 14px;
+    margin-bottom: 8px;
 }

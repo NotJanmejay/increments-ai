@@ -1,6 +1,7 @@
 import AddStudentComponent from "../components/addStudent"
 import StudentManager from "../components/studentManager"
 import UploadDocument from "../components/uploadDocument"
+import AddTeacherPersona from "../components/addTeacherPersona"
 import "../styles/TeacherAdmin.css"
 import React from 'react'
 
@@ -26,11 +27,23 @@ function TeacherAdmin() {
           <p onClick={() => setCurrentSection("add-student")}>Add Students</p>
           <p onClick={() => setCurrentSection("upload-documents")}>Upload Documents</p>
           <p onClick={() => setCurrentSection("student-manager")}>Student Manager</p>
+          <p onClick={() => setCurrentSection("teacher-persona")}>Add Teacher Persona</p>
         </div>
         <div id="right-pane">
           {
-            currentSection === "add-student" ? <AddStudentComponent setStudents={setStudents} /> : currentSection === "upload-documents" ? <UploadDocument /> : <StudentManager students={students} setStudents={setStudents} />
+            currentSection == "add-student" && <AddStudentComponent setStudents={setStudents} />
           }
+          {
+            currentSection == "upload-documents" && <UploadDocument />
+          }
+          {
+            currentSection == "student-manager" && <StudentManager setStudents={setStudents} students={students} />
+          }
+          {
+            currentSection == "teacher-persona" && <AddTeacherPersona />
+          }
+
+
         </div>
       </section>
     </main>
