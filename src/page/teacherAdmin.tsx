@@ -7,13 +7,12 @@ import React from 'react'
 
 function TeacherAdmin() {
   const [currentSection, setCurrentSection] = React.useState<String>("add-student")
-  const [students, setStudents] = React.useState<any>([{
-    name: "Janmejay Chatterjee",
-    email: "janmejaychatterjee@gmail.com",
-    class: "7th Sem",
-    contact: "9016589044",
-    parentEmail: "delsionrouge@gmail.com"
-  }])
+  const [students, setStudents] = React.useState<any>([])
+
+  React.useEffect(() => {
+    fetch("http://localhost:8000/api/students/all").then(res => res.json()).then(data => setStudents(data))
+  }, [])
+
   return (
     <main>
       <nav id="teacher-nav">
