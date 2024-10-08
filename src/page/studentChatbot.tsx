@@ -2,11 +2,10 @@ import "../styles/studentChatbot.css";
 import { GoPaperAirplane } from "react-icons/go";
 import React, { Key, KeyboardEvent, ChangeEvent } from "react";
 import { CgSpinner } from "react-icons/cg";
-import { FaUser, FaRobot } from "react-icons/fa";
 
 interface Message {
     id: Key | null | undefined;
-    role: "User" | "AI";
+    role: "User" | "AI" | "System"
     content: String;
 }
 
@@ -35,11 +34,14 @@ export default function StudentChatbot() {
     const [messages, setMessages] = React.useState<Message[]>([]);
     const [loading, isLoading] = React.useState<Boolean>(false);
     const [prompt, setPrompt] = React.useState<String>("");
-    const [personas, setPersonas] = React.useState<any>([
-        { subject: "Maths" },
-        { subject: "Economics" },
-    ]);
+    const [personas, setPersonas] = React.useState<any>([]);
     const [selectedPersona, setSelectedPersona] = React.useState<any>({});
+
+    React.useEffect(() => {
+        fetch("http://localhost:8000/api/teachers/all").then(res => res.json()).then(data => {
+            setPersonas(data)
+        })
+    }, [])
 
     const handleSubmit = (e: KeyboardEvent<HTMLInputElement>) => {
         e.preventDefault();
@@ -49,22 +51,46 @@ export default function StudentChatbot() {
             role: "User",
             content: prompt,
         };
+
         if (prompt.trim()) {
             setMessages((prevMessages) => [...prevMessages, userMessage]);
             setPrompt("");
         }
         isLoading(true);
-
-        setTimeout(() => {
-            const AiMessage: Message = {
+        fetch("http://localhost:8000/api/students/query/", {
+            method: "POST",
+            body: JSON.stringify({
+                messages: messages.slice(0, messages.length - 1),
+                prompt: prompt
+            })
+        }).then(res => res.json()).then(data => {
+            console.log(data);
+            const LLMResponse: Message = {
                 id: Math.random(),
                 role: "AI",
-                content: "I'm Increments, How may I help you?",
-            };
-            setMessages((prevMessages) => [...prevMessages, AiMessage]);
-            isLoading(false);
-        }, 1000);
+                content: data.response
+            }
+            setMessages(prevMessages => ([...prevMessages, LLMResponse]))
+        }).finally(() => { isLoading(false) })
+
+
     };
+
+    //@ts-ignore
+    const handleSwitchPersona = (p) => {
+        setSelectedPersona(p);
+        const systemPrompt: Message = {
+            id: Math.random(),
+            role: 'System',
+            content: p.prompt
+        }
+        const greetingMessage: Message = {
+            id: Math.random(),
+            role: 'AI',
+            content: p.greetings
+        }
+        setMessages([systemPrompt, greetingMessage])
+    }
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         setPrompt(e.target.value);
@@ -79,11 +105,26 @@ export default function StudentChatbot() {
             <section id="chatbot-container">
                 {Object.keys(selectedPersona).length == 0 && <EmptyState />}
                 {messages.map((message) => (
-                    <div key={message.id}>
-                        {message.role === "User" ? "User: " : "AI: "}
-                        {message.content}
-                    </div>
+                    message.role !== "System" && (
+                        <div
+                            key={message.id}
+                            style={{
+                                backgroundColor: message.role === "AI" ? "gray" : "white",
+                                color: message.role === "AI" ? "white" : "black",
+                                fontFamily: message.role === "AI" ? "monospace" : "inherit",
+                                padding: "10px",
+                                margin: "5px 0",
+                                borderRadius: "5px",
+                                fontSize: message.role === "AI" ? "14px" : "14px",
+                            }}
+                        >
+                            {message.role === "User" ? "User: " : "AI: "}
+                            {message.content}
+                        </div>
+                    )
                 ))}
+
+
                 {loading && <CgSpinner className="loader" />}
 
                 <form id="chat-input-form" action="">
@@ -107,7 +148,7 @@ export default function StudentChatbot() {
                                 key={p.subject}
                                 className={`persona-selector ${selectedPersona.subject === p.subject ? "selected" : ""
                                     }`}
-                                onClick={() => setSelectedPersona(p)}
+                                onClick={() => handleSwitchPersona(p)}
                             >
                                 {p.subject[0]}
                             </div>

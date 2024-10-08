@@ -36,7 +36,7 @@ function TeacherAdmin() {
             currentSection == "upload-documents" && <UploadDocument />
           }
           {
-            currentSection == "student-manager" && <StudentManager setStudents={setStudents} students={students} />
+            currentSection == "student-manager" && <StudentManager students={students} />
           }
           {
             currentSection == "teacher-persona" && <AddTeacherPersona />

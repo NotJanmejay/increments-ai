@@ -1,13 +1,13 @@
-import React from "react"
-import toast from 'react-hot-toast';
+import React from "react";
+import toast from "react-hot-toast";
 
 function AddStudentComponent({ setStudents }: { setStudents: any }) {
     const [studentData, setStudentData] = React.useState({
-        name: '',
-        email: '',
-        class: '',
-        contact: '',
-        parentEmail: '',
+        name: "",
+        email: "",
+        class: "",
+        contact: "",
+        parentEmail: "",
     });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -20,59 +20,81 @@ function AddStudentComponent({ setStudents }: { setStudents: any }) {
 
     const handleAddStudent = () => {
         setStudents((prevStudents: any) => [...prevStudents, studentData]);
-        // Clear form after adding student
+        console.log(JSON.stringify({
+            name: studentData.name,
+            email: studentData.email,
+            standard: studentData.class,
+            contact_number: studentData.contact,
+            parent_email: studentData.parentEmail,
+        }))
+        fetch("http://localhost:8000/api/students/create/", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                name: studentData.name,
+                email: studentData.email,
+                standard: studentData.class,
+                contact_number: studentData.contact,
+                parent_email: studentData.parentEmail,
+            }),
+
+        }).then(res => res.json()).then(data => {
+            console.log(data)
+            toast.success("Student Added Successfully. Password Generated is : " + data.generated_password);
+        })
         setStudentData({
-            name: '',
-            email: '',
-            class: '',
-            contact: '',
-            parentEmail: '',
+            name: "",
+            email: "",
+            class: "",
+            contact: "",
+            parentEmail: "",
         });
-        toast.success("Student Added Successfully.")
     };
 
     return (
-        <div className='option-container'>
+        <div className="option-container">
             <div className="title">Add Student</div>
             <p>Add your students here to generate their credentials</p>
             <div id="input-fields">
                 <input
                     type="text"
                     name="name"
-                    placeholder='Name'
+                    placeholder="Name"
                     value={studentData.name}
                     onChange={handleChange}
                 />
                 <input
                     type="email"
                     name="email"
-                    placeholder='Email Address'
+                    placeholder="Email Address"
                     value={studentData.email}
                     onChange={handleChange}
                 />
                 <input
                     type="text"
                     name="class"
-                    placeholder='Class'
+                    placeholder="Class"
                     value={studentData.class}
                     onChange={handleChange}
                 />
                 <input
                     type="tel"
                     name="contact"
-                    placeholder='Contact Number'
+                    placeholder="Contact Number"
                     value={studentData.contact}
                     onChange={handleChange}
                 />
                 <input
                     type="email"
                     name="parentEmail"
-                    placeholder='Parent Email Address'
+                    placeholder="Parent Email Address"
                     value={studentData.parentEmail}
                     onChange={handleChange}
                 />
             </div>
-            <div className='button-section'>
+            <div className="button-section">
                 <button onClick={handleAddStudent}>Add Student</button>
             </div>
         </div>
