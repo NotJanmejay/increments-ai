@@ -19,7 +19,7 @@ function TeacherAdmin() {
       <nav id="teacher-nav">
         <span className='msbc-ai'>MSBC AI Division</span>
         <div>Dashboard</div>
-        <div>Contact</div>
+        <div>Personas</div>
       </nav>
       <section>
         <div id="left-pane">

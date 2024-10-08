@@ -57,3 +57,41 @@
 .loader{
     animation: spinner 1s linear infinite ;
 }
+
+.persona-container{
+    display: flex;
+    gap: 10px
+}
+
+.persona-selector{
+    height: 28px;
+    width: 28px;
+    border-radius: 50%;
+    background-color: rgb(202, 201, 201);
+    transition: all 100ms cubic-bezier(0.165, 0.84, 0.44, 1);
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.persona-selector:first-child{
+    background-color: rgb(85, 166, 233);
+    color: white;
+}
+
+.persona-selector:nth-child(2n){
+    background-color: rgb(233, 152, 85);
+    color: white;
+}
+
+.persona-selector:hover{
+    transform: scale(108%);
+}
+
+.persona-selector.selected {
+    border: rgb(36, 36, 36) 1px solid;
+    color: white;
+    font-weight: bold;
+}
