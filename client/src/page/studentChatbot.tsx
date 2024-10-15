@@ -9,7 +9,7 @@ import { MathJaxContext } from "better-react-mathjax";
 interface Message {
   id: Key | null | undefined;
   role: "User" | "AI" | "System";
-  content: string;
+  content?: string; // Make content optional for the loading state
 }
 
 function EmptyState() {
@@ -35,7 +35,7 @@ function EmptyState() {
 
 export default function StudentChatbot() {
   const [messages, setMessages] = React.useState<Message[]>([]);
-  const [loading, isLoading] = React.useState<boolean>(false);
+  const [loading, setLoading] = React.useState<boolean>(false);
   const [prompt, setPrompt] = React.useState<string>("");
   const [personas, setPersonas] = React.useState<any>([]);
   const [selectedPersona, setSelectedPersona] = React.useState<any>({});
@@ -69,7 +69,14 @@ export default function StudentChatbot() {
       setMessages((prevMessages) => [...prevMessages, userMessage]);
       setPrompt("");
     }
-    isLoading(true);
+
+    setLoading(true);
+    const loadingMessage: Message = {
+      id: Math.random(),
+      role: "AI", // Placeholder AI message for the loading spinner
+    };
+    setMessages((prevMessages) => [...prevMessages, loadingMessage]);
+
     fetch("http://localhost:8000/api/students/query/", {
       method: "POST",
       body: JSON.stringify({
@@ -84,13 +91,14 @@ export default function StudentChatbot() {
           role: "AI",
           content: data.response,
         };
-        //! DEBUG
-        console.log(data);
-        //!
-        setMessages((prevMessages) => [...prevMessages, LLMResponse]);
+        setMessages((prevMessages) =>
+          prevMessages.map((msg) =>
+            msg.role === "AI" && !msg.content ? LLMResponse : msg
+          )
+        );
       })
       .finally(() => {
-        isLoading(false);
+        setLoading(false);
       });
   };
 
@@ -135,7 +143,11 @@ export default function StudentChatbot() {
                         {selectedPersona.subject[0]}
                       </div>
                       <div>
-                        <RenderMarkdown>{message.content}</RenderMarkdown>
+                        {message.content ? (
+                          <RenderMarkdown>{message.content}</RenderMarkdown>
+                        ) : (
+                          <CgSpinner className="loader" />
+                        )}
                       </div>
                     </div>
                   ) : (
@@ -145,7 +157,6 @@ export default function StudentChatbot() {
               )
           )}
         </MathJaxContext>
-        {loading && <CgSpinner className="loader" />}
 
         <form id="chat-input-form" action="">
           <input

@@ -53,6 +53,7 @@
 }
 
 .loader {
+  margin-top: 5px;
   animation: spinner 1s linear infinite;
 }
 
