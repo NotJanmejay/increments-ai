@@ -1,0 +1,36 @@
+import TeacherAdmin from "./page/teacherAdmin";
+import StudentChatbot from "./page/studentChatbot";
+import LogIn from "./page/LogIn";
+import { Routes, Route, Link } from "react-router-dom";
+import "./App.css";
+
+function Home() {
+  return (
+    <div className="home-container">
+      <h1>Welcome</h1>
+      <div className="button-container">
+        <Link to="/teacher">
+          <button className="nav-button">Teacher</button>
+        </Link>
+        <Link to="/student">
+          <button className="nav-button">Student</button>
+        </Link>
+      </div>
+    </div>
+  );
+}
+
+function App() {
+  return (
+    <>
+      <Routes>
+        <Route element={<Home />} path="/" />
+        <Route element={<TeacherAdmin />} path="/teacher" />
+        <Route element={<StudentChatbot />} path="/student" />
+        <Route element={<LogIn />} path="/login" />
+      </Routes>
+    </>
+  );
+}
+
+export default App;

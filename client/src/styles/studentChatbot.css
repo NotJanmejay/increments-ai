@@ -1,0 +1,153 @@
+#chatbot-nav {
+  height: 5vh;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2vw;
+}
+
+#chatbot-container {
+  height: calc(100% - 8vh);
+  display: flex;
+  flex-direction: column;
+  gap: 2vh;
+  position: relative;
+  margin: 0 20vw;
+  overflow-y: scroll;
+  padding-right: 5px;
+}
+
+#chat-input-form {
+  position: fixed;
+  bottom: 5vh;
+  border-radius: 32px;
+  border: none;
+  background-color: rgb(241, 241, 241);
+  height: 50px;
+  width: 57%;
+  padding: 0 1vw;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+#chat-input {
+  border: none;
+  outline: none;
+  background-color: rgb(241, 241, 241);
+  width: 100%;
+}
+
+#chat-input:focus {
+  border: none;
+  outline: none;
+}
+
+@keyframes spinner {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.loader {
+  animation: spinner 1s linear infinite;
+}
+
+.persona-container {
+  display: flex;
+  gap: 10px;
+}
+
+.persona-selector.static {
+  height: 30px; /* Set fixed size for the DP */
+  width: 30px; /* Set fixed size for the DP */
+  border-radius: 50%; /* Make it a circle */
+  background-color: rgb(202, 201, 201); /* Set DP background color */
+  display: grid; /* Ensure the text inside the DP is centered */
+  place-items: center;
+  font-size: 12px; /* Adjust font size */
+  font-weight: 600;
+  flex-shrink: 0; /* Prevent DP from shrinking */
+}
+
+.persona-selector.static:hover {
+  opacity: 0.7;
+  transition: all 200ms cubic-bezier(0.165, 0.84, 0.44, 1);
+  cursor: pointer;
+}
+
+.persona-selector {
+  height: 40px; /* Set fixed size for the DP */
+  width: 40px; /* Set fixed size for the DP */
+  border-radius: 50%; /* Make it a circle */
+  background-color: rgb(202, 201, 201); /* Set DP background color */
+  display: grid; /* Ensure the text inside the DP is centered */
+  place-items: center;
+  font-size: 12px; /* Adjust font size */
+  font-weight: 600;
+  flex-shrink: 0; /* Prevent DP from shrinking */
+}
+
+.persona-selector:first-child {
+  background-color: rgb(85, 166, 233);
+  color: white;
+}
+
+.persona-selector:nth-child(2n) {
+  background-color: rgb(233, 152, 85);
+  color: white;
+}
+
+.persona-selector.selected {
+  border: rgb(36, 36, 36) 1px solid;
+  color: white;
+  font-weight: bold;
+}
+
+.user-message {
+  background-color: #007aff; /* iMessage blue color */
+  color: white;
+  padding: 10px 15px;
+  width: fit-content;
+  max-width: 80%; /* Adjust based on desired bubble size */
+  border-radius: 20px;
+  border-bottom-right-radius: 5px; /* Creates the 'tail' corner */
+  position: relative;
+  float: right;
+}
+
+.ai-message {
+  display: flex;
+  align-items: flex-start; /* Ensure AI DP stays at the top of the message */
+  gap: 10px; /* Space between AI DP and the message */
+}
+
+.ai-message div {
+  max-width: calc(100% - 10rem); /* Prevent the message from going too wide */
+  background-color: rgb(210, 238, 255); /* Adjust color as needed */
+  padding: 0px 15px;
+  border-radius: 20px;
+  border-bottom-right-radius: 5px; /* Creates the 'tail' corner */
+  color: black; /* Message text color */
+  word-wrap: break-word; /* Ensure long words don't overflow */
+}
+
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+  background: rgba(156, 157, 158, 0.8);
+}
