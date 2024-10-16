@@ -10,7 +10,6 @@ import {
   TextField,
 } from "@mui/material";
 import toast from "react-hot-toast";
-import "../styles/TeacherPersonaManager.css";
 
 interface TeacherPersona {
   name: string;
@@ -41,10 +40,7 @@ function PersonaCard({
       <p className="description">{teacher.description}</p>
       <div className="button-section">
         <button onClick={onEdit}>Edit</button>
-        <button
-          onClick={onDelete}
-          style={{ backgroundColor: "rgba(255, 41, 41, 1)" }}
-        >
+        <button onClick={onDelete} className="delete-btn">
           Delete
         </button>
       </div>
@@ -158,8 +154,9 @@ const TeacherPersonaManager: React.FC = () => {
   if (error) return <div>{error}</div>;
 
   return (
-    <div className="teacher-persona-manager">
+    <div className="option-container">
       <div className="title">Manage Teacher Persona</div>
+      <p>Manage all the added teacher personas here</p>
       <div className="teacher-persona-container">
         {personas.map((teacher) => (
           <PersonaCard

@@ -13,6 +13,8 @@ import {
   DialogContent,
   DialogTitle,
 } from "@mui/material";
+import { GoPencil } from "react-icons/go";
+import { FaRegTrashCan } from "react-icons/fa6";
 import React, { useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
@@ -50,7 +52,7 @@ function StudentManager({ students, setStudents }: StudentManagerProps) {
     try {
       await axios.put(
         `http://localhost:8000/api/students/edit/${editStudent.email}/`,
-        editStudent,
+        editStudent
       );
       handleClose();
       toast.success("Student updated successfully!");
@@ -66,14 +68,14 @@ function StudentManager({ students, setStudents }: StudentManagerProps) {
     console.log("Deleting student with email:", email);
     console.log(
       "setStudents is a function:",
-      typeof setStudents === "function",
+      typeof setStudents === "function"
     );
 
     try {
       await axios.delete(`http://localhost:8000/api/students/delete/${email}/`);
 
       setStudents((prevStudents) =>
-        prevStudents.filter((s) => s.email !== email),
+        prevStudents.filter((s) => s.email !== email)
       );
       toast.success("Student deleted successfully!"); // Use toast for feedback
     } catch (error) {
@@ -89,9 +91,14 @@ function StudentManager({ students, setStudents }: StudentManagerProps) {
 
       <TableContainer
         component={Paper}
-        style={{ marginTop: "10px", boxShadow: "none" }}
+        className="table"
+        sx={{
+          backgroundColor: "var(--text)",
+          boxShadow: "none",
+          border: "1px solid var(--secondary)",
+        }}
       >
-        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+        <Table aria-label="simple table">
           <TableHead>
             <TableRow>
               <TableCell>Student Name</TableCell>
@@ -117,23 +124,15 @@ function StudentManager({ students, setStudents }: StudentManagerProps) {
                 <TableCell align="right">{row.contact_number}</TableCell>
                 <TableCell align="right">{row.parent_email}</TableCell>
                 <TableCell align="right">
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => handleEdit(row)}
-                    size="small"
-                  >
+                  <GoPencil onClick={() => handleEdit(row)} className="icon">
                     Edit
-                  </Button>
-                  <Button
-                    variant="contained"
-                    color="secondary"
+                  </GoPencil>
+                  <FaRegTrashCan
                     onClick={() => handleDelete(row.email)}
-                    size="small"
-                    style={{ marginLeft: "10px" }}
+                    className="icon"
                   >
                     Delete
-                  </Button>
+                  </FaRegTrashCan>
                 </TableCell>
               </TableRow>
             ))}

@@ -2,15 +2,23 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  padding-top: 20vh;
   height: 100vh;
+  background-color: var(--primary);
+  color: var(--text);
 }
 
-#home-header {
-  display: flex;
-  align-items: center; /* Align items vertically center */
-  background-color: #fff; /* Background color of the header */
-  padding: 10px; /* Add some padding */
+.home-container h1 {
+  font-size: 8rem;
+  margin-top: 5vh;
+}
+
+.home-container img {
+  width: 22rem;
+}
+
+.home-container p {
+  font-size: 1.5rem;
 }
 
 .msbc-logo {
@@ -27,23 +35,23 @@
 .button-container {
   display: flex;
   gap: 20px;
-  margin-top: 20px;
+  margin-top: 3rem;
 }
 
 .nav-button {
   padding: 15px 25px;
   font-size: 18px;
-  background-color: #000;
-  color: #fff;
-  border: 2px solid #000;
-  border-radius: 5px;
   cursor: pointer;
   transition:
     background-color 0.3s,
     color 0.3s;
+  background-color: var(--secondary);
+  color: var(--text);
+  font-weight: 600;
+  border: none;
 }
 
 .nav-button:hover {
-  background-color: #fff;
-  color: #000;
+  background-color: var(--text);
+  color: var(--secondary);
 }

@@ -5,7 +5,7 @@ import AddTeacherPersona from "../components/addTeacherPersona";
 import TeacherPersonaManager from "../components/TeacherPersonaManager";
 import "../styles/TeacherAdmin.css";
 import React from "react";
-import TeacherNavbar from "../components/TeacherNavbar";
+import Navbar from "../components/Navbar";
 
 function TeacherAdmin() {
   const [currentSection, setCurrentSection] =
@@ -31,8 +31,8 @@ function TeacherAdmin() {
   }, []);
 
   return (
-    <main>
-      <TeacherNavbar />
+    <main id="teacher-page">
+      <Navbar />
       <section className="teacher-admin-container">
         <div id="left-pane">
           <h1>Teacher Portal</h1>

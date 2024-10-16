@@ -2,7 +2,7 @@ import "../styles/studentChatbot.css";
 import { GoPaperAirplane } from "react-icons/go";
 import React, { Key, KeyboardEvent, ChangeEvent } from "react";
 import { CgSpinner } from "react-icons/cg";
-import TeacherNavbar from "../components/TeacherNavbar";
+import Navbar from "../components/Navbar";
 import RenderMarkdown from "../components/RenderMarkdown";
 import { MathJaxContext } from "better-react-mathjax";
 
@@ -14,9 +14,9 @@ interface Message {
 
 function EmptyState() {
   return (
-    <div>
+    <div className="empty-state">
       <h1>Welcome to Increments</h1>
-      <p style={{ opacity: "70%", marginTop: "10px" }}>
+      <p style={{ marginTop: "1rem" }}>
         Increments is an experienced virtual teacher with over a decade of
         expertise in guiding students through their school curriculum. Adopting
         a supportive and engaging teaching style, Increments tailors responses
@@ -35,7 +35,7 @@ function EmptyState() {
 
 export default function StudentChatbot() {
   const [messages, setMessages] = React.useState<Message[]>([]);
-  const [loading, setLoading] = React.useState<boolean>(false);
+  const [_, setLoading] = React.useState<boolean>(false);
   const [prompt, setPrompt] = React.useState<string>("");
   const [personas, setPersonas] = React.useState<any>([]);
   const [selectedPersona, setSelectedPersona] = React.useState<any>({});
@@ -123,8 +123,8 @@ export default function StudentChatbot() {
   };
 
   return (
-    <main style={{ height: "90vh" }}>
-      <TeacherNavbar />
+    <main className="chatbot-page">
+      <Navbar />
       <section id="chatbot-container" ref={chatContainerRef}>
         {Object.keys(selectedPersona).length === 0 && <EmptyState />}
         <MathJaxContext config={{ loader: { load: ["input/asciimath"] } }}>
@@ -142,7 +142,7 @@ export default function StudentChatbot() {
                       <div className="persona-selector">
                         {selectedPersona.subject[0]}
                       </div>
-                      <div>
+                      <div className="ai-message-content">
                         {message.content ? (
                           <RenderMarkdown>{message.content}</RenderMarkdown>
                         ) : (
@@ -201,7 +201,7 @@ export default function StudentChatbot() {
               </div>
             ))}
           </div>
-          <GoPaperAirplane style={{ opacity: "60%", cursor: "pointer" }} />
+          <GoPaperAirplane id="send-icon" />
         </form>
       </section>
     </main>

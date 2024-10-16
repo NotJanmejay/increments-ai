@@ -2,12 +2,15 @@ import TeacherAdmin from "./page/teacherAdmin";
 import StudentChatbot from "./page/studentChatbot";
 import LogIn from "./page/LogIn";
 import { Routes, Route, Link } from "react-router-dom";
+import Logo from "./assets/logo-on-green.png";
 import "./App.css";
 
 function Home() {
   return (
     <div className="home-container">
+      <img src={Logo} alt="increments-logo" />
       <h1>Welcome</h1>
+      <p>to the future of learning</p>
       <div className="button-container">
         <Link to="/teacher">
           <button className="nav-button">Teacher</button>
