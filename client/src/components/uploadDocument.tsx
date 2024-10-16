@@ -39,7 +39,7 @@ const UploadDocument: React.FC = () => {
 
   const onDrop = (acceptedFiles: FileWithPath[]) => {
     const pdfFiles = acceptedFiles.filter(
-      (file) => file.type === "application/pdf",
+      (file) => file.type === "application/pdf"
     );
     if (pdfFiles.length > 0) {
       console.log("Selected PDFs:", pdfFiles);
@@ -73,7 +73,7 @@ const UploadDocument: React.FC = () => {
           headers: {
             "Content-Type": "multipart/form-data",
           },
-        },
+        }
       );
 
       console.log("Upload successful:", response.data);
@@ -88,7 +88,7 @@ const UploadDocument: React.FC = () => {
     } catch (err: any) {
       console.error("Upload error:", err.response?.data);
       setError(
-        err.response?.data?.detail || "Upload failed. Please try again.",
+        err.response?.data?.detail || "Upload failed. Please try again."
       );
     } finally {
       setUploading(false);
@@ -99,7 +99,7 @@ const UploadDocument: React.FC = () => {
     const interval = setInterval(async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8000/api/check-status/${fileName}/`,
+          `http://localhost:8000/api/check-status/${fileName}/`
         );
         if (response.status === 200) {
           setEmbeddingComplete(true);
@@ -185,22 +185,17 @@ const UploadDocument: React.FC = () => {
         )}
       </div>
 
-      <div className="button-section">
-        <Button
-          variant="contained"
+      <div className="button-section" style={{ display: "flex", gap: "10px" }}>
+        <button
           onClick={handleUpload}
           disabled={uploading}
           startIcon={<UploadIcon />} // Add upload icon
         >
           {uploading ? <CircularProgress size={24} /> : "Upload Document"}
-        </Button>
-        <Button
-          variant="outlined"
-          onClick={handleOpenDrawer}
-          sx={{ marginLeft: "10px" }}
-        >
+        </button>
+        <button onClick={handleOpenDrawer} sx={{ marginLeft: "10px" }}>
           Uploaded PDFs
-        </Button>
+        </button>
       </div>
 
       {error && <p className="error-message">{error}</p>}
@@ -282,9 +277,3 @@ const UploadDocument: React.FC = () => {
 };
 
 export default UploadDocument;
-
-// export default function UploadDocument() {
-//     return (
-//         <div>Upload Documents</div>
-//     )
-// }

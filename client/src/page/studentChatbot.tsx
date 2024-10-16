@@ -55,7 +55,7 @@ export default function StudentChatbot() {
         chatContainerRef.current.scrollHeight;
     }
   }, [messages]);
-
+  ``;
   const handleSubmit = (e: KeyboardEvent<HTMLInputElement>) => {
     e.preventDefault();
 

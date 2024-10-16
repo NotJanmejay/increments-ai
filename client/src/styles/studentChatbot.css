@@ -1,5 +1,6 @@
 .chatbot-page {
-  background-color: var(--accent-primary);
+  /* background-color: var(--accent-primary); */
+  background-color: white;
   height: 100vh;
   padding-top: 8vh;
   color: var(--secondary);
@@ -28,7 +29,7 @@
   bottom: 5vh;
   border-radius: 32px;
   border: none;
-  background-color: var(--accent-primary);
+  background-color: white;
   color: var(--secondary);
   border: 1px solid var(--secondary);
   height: 50px;
@@ -94,8 +95,10 @@
   display: grid;
   place-items: center;
   font-size: 0.8rem;
+  background-color: var(--accent-primary);
   font-weight: 600;
   cursor: pointer;
+  color: var(--secondary);
   transition: all 500ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
@@ -104,7 +107,8 @@
 }
 
 .persona-selector.selected {
-  background-color: var(--primary);
+  background-color: black;
+  color: white;
   transform: translateY(-5px);
 }
 
@@ -149,7 +153,9 @@
 
 .ai-message .ai-message-content {
   max-width: calc(100% - 10rem); /* Prevent the message from going too wide */
-  background-color: var(--accent-primary);
+  /* background-color: var(--accent-primary); */
+  background-color: #fbfbfb;
+  /* color: var(--secondary); */
   color: var(--secondary);
   padding: 0px 15px;
   border-radius: 20px;
@@ -159,7 +165,7 @@
 }
 
 ::-webkit-scrollbar {
-  width: 4px;
+  width: 0;
 }
 
 /* Track */

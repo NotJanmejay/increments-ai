@@ -93,7 +93,7 @@ function StudentManager({ students, setStudents }: StudentManagerProps) {
         component={Paper}
         className="table"
         sx={{
-          backgroundColor: "var(--text)",
+          backgroundColor: "white",
           boxShadow: "none",
           border: "1px solid var(--secondary)",
         }}
@@ -101,12 +101,12 @@ function StudentManager({ students, setStudents }: StudentManagerProps) {
         <Table aria-label="simple table">
           <TableHead>
             <TableRow>
-              <TableCell>Student Name</TableCell>
-              <TableCell align="right">Email</TableCell>
-              <TableCell align="right">Class</TableCell>
-              <TableCell align="right">Contact</TableCell>
-              <TableCell align="right">Parent Email</TableCell>
-              <TableCell align="right">Actions</TableCell>
+              <TableCell align="left">Student Name</TableCell>
+              <TableCell align="left">Email</TableCell>
+              <TableCell align="left">Class</TableCell>
+              <TableCell align="left">Contact</TableCell>
+              <TableCell align="left">Parent Email</TableCell>
+              <TableCell align="left">Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -118,12 +118,12 @@ function StudentManager({ students, setStudents }: StudentManagerProps) {
                 <TableCell component="th" scope="row">
                   {row.name}
                 </TableCell>
-                <TableCell align="right">{row.email}</TableCell>
-                <TableCell align="right">{row.standard}</TableCell>{" "}
+                <TableCell align="left">{row.email}</TableCell>
+                <TableCell align="left">{row.standard}</TableCell>{" "}
                 {/* Update to 'standard' */}
-                <TableCell align="right">{row.contact_number}</TableCell>
-                <TableCell align="right">{row.parent_email}</TableCell>
-                <TableCell align="right">
+                <TableCell align="left">{row.contact_number}</TableCell>
+                <TableCell align="left">{row.parent_email}</TableCell>
+                <TableCell align="left">
                   <GoPencil onClick={() => handleEdit(row)} className="icon">
                     Edit
                   </GoPencil>
