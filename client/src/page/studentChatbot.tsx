@@ -80,7 +80,7 @@ export default function StudentChatbot() {
     fetch("http://localhost:8000/api/students/query/", {
       method: "POST",
       body: JSON.stringify({
-        messages: messages.slice(0, messages.length - 1),
+        teacher_id: selectedPersona.id,
         prompt: prompt,
       }),
     })

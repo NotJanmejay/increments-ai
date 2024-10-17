@@ -24,6 +24,9 @@ os.environ["REQUESTS_CA_BUNDLE"] = "./certificate.cer"
 
 client = OpenAI()
 
+#! Local Variable
+session_manager = {}
+
 
 def generate_prompt(body):
     return dedent(
@@ -299,5 +302,42 @@ def list_uploaded_pdfs(request, teacher_id):
 
 @api_view(["POST"])
 def ask_questions(request):
-    # TODO
-    pass
+    body = json.loads(request.body)
+
+    prompt = body["prompt"]
+    teacher_id = body["teacher_id"]
+
+    teacher = Teacher.objects.get(id=teacher_id)
+    assistant_id = teacher.assistant_id
+    vector_store_id = teacher.vector_store_id
+    global session_state
+    if session_state == "":
+        try:
+            print("New thread generated for a new user")
+            thread = client.beta.threads.create()
+            session_state = thread.id
+        except Exception as e:
+            print("Something went wrong creating thread", e)
+            session_state = None
+
+    client.beta.threads.messages.create(
+        thread_id=session_state, role="user", content=prompt
+    )
+
+    client.beta.assistants.update(
+        assistant_id=assistant_id,
+        tool_resources={"file_search": {"vector_store_ids": [vector_store_id]}},
+    )
+
+    response = client.beta.threads.runs.create_and_poll(
+        thread_id=session_state,
+        assistant_id=assistant_id,
+    )
+
+    message = message = list(
+        client.beta.threads.messages.list(thread_id=session_state, run_id=response.id)
+    )
+
+    return Response(
+        {"response": message[0].content[0].text.value}, status=status.HTTP_200_OK
+    )
