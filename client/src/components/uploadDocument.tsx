@@ -105,6 +105,7 @@ const UploadDocument = () => {
         }
       );
       toast.success("File Uploaded Successfully!");
+      setSelectedFiles([])
     } catch (err: any) {
       console.error("Upload error:", err.response?.data);
       setError(
