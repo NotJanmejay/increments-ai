@@ -217,10 +217,27 @@
   cursor: pointer;
   color: var(--secondary);
   transition: all 500ms cubic-bezier(0.165, 0.84, 0.44, 1);
+  height: 1.5rem;
+  width: 1.5rem;
+}
+
+#del-icon {
+  cursor: pointer;
+  transition: all 500ms cubic-bezier(0.165, 0.84, 0.44, 1);
   height: 1.2rem;
   width: 1.2rem;
+  margin-right: 1rem;
+}
+
+#del-icon:hover {
+  color: var(--danger);
+  transform: translateY(-2px);
 }
 
 #send-icon:hover {
   transform: translateX(5px);
+}
+
+#memory-cleared {
+  font-weight: 600;
 }

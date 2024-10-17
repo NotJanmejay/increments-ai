@@ -300,9 +300,20 @@ def list_uploaded_pdfs(request, teacher_id):
     return Response(pdf_list, status=status.HTTP_200_OK)
 
 
+@api_view(["GET"])
+def clear_memory(request):
+    global session_manager
+    session_manager.clear()
+    return Response({"message": "Memory cleared"}, status=status.HTTP_200_OK)
+
+
 @api_view(["POST"])
 def ask_questions(request):
     body = json.loads(request.body)
+    global session_manager
+    #! DEBUG
+    print(session_manager)
+    #! DEBUG
 
     prompt = body["prompt"]
     teacher_id = body["teacher_id"]
@@ -310,32 +321,40 @@ def ask_questions(request):
     teacher = Teacher.objects.get(id=teacher_id)
     assistant_id = teacher.assistant_id
     vector_store_id = teacher.vector_store_id
-    global session_state
-    if session_state == "":
-        try:
-            print("New thread generated for a new user")
-            thread = client.beta.threads.create()
-            session_state = thread.id
-        except Exception as e:
-            print("Something went wrong creating thread", e)
-            session_state = None
+
+    if teacher_id not in session_manager:
+        thread = client.beta.threads.create()
+        thread_id = thread.id
+
+        session_manager[teacher_id] = {
+            "thread_id": thread_id,
+            "assistant_id": assistant_id,
+            "vector_store_id": vector_store_id,
+        }
+    else:
+        thread_id = session_manager[teacher_id]["thread_id"]
+        if (
+            session_manager[teacher_id]["assistant_id"] != assistant_id
+            or session_manager[teacher_id]["vector_store_id"] != vector_store_id
+        ):
+            client.beta.assistants.update(
+                assistant_id=assistant_id,
+                tool_resources={"file_search": {"vector_store_ids": [vector_store_id]}},
+            )
+            session_manager[teacher_id]["assistant_id"] = assistant_id
+            session_manager[teacher_id]["vector_store_id"] = vector_store_id
 
     client.beta.threads.messages.create(
-        thread_id=session_state, role="user", content=prompt
-    )
-
-    client.beta.assistants.update(
-        assistant_id=assistant_id,
-        tool_resources={"file_search": {"vector_store_ids": [vector_store_id]}},
+        thread_id=thread_id, role="user", content=prompt
     )
 
     response = client.beta.threads.runs.create_and_poll(
-        thread_id=session_state,
+        thread_id=thread_id,
         assistant_id=assistant_id,
     )
 
-    message = message = list(
-        client.beta.threads.messages.list(thread_id=session_state, run_id=response.id)
+    message = list(
+        client.beta.threads.messages.list(thread_id=thread_id, run_id=response.id)
     )
 
     return Response(

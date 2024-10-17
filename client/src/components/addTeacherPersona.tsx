@@ -10,7 +10,7 @@ function AddTeacherPersona() {
     greetings: "",
   });
 
-  const isDisabled = !(
+  let isDisabled = !(
     teacherData.name &&
     teacherData.tagline &&
     teacherData.subject &&

@@ -11,6 +11,7 @@ from .views import (
     ask_questions,
     upload_pdf,
     edit_teacher,
+    clear_memory,
     check_embedding_status,
     list_uploaded_pdfs,
 )
@@ -23,10 +24,15 @@ urlpatterns = [
     path("students/delete/<str:email>/", delete_student, name="delete_student"),
     path("teachers/create/", create_teacher, name="create_teacher"),
     path("teachers/all/", get_teachers, name="get_teachers"),
-    path("teachers/delete/<str:name>/", delete_teacher, name="delete_teacher"),
-    path("teachers/edit/<str:name>/", edit_teacher, name="edit_teacher"),
-    path("students/query/", ask_questions, name="ask_questions"),
+    path("teachers/delete/<str:id>/", delete_teacher, name="delete_teacher"),
+    path("teachers/edit/<str:id>/", edit_teacher, name="edit_teacher"),
+    path("students/chat/query/", ask_questions, name="ask_questions"),
+    path("students/chat/clear/", clear_memory, name="clear_memory"),
     path("pdf/upload/", upload_pdf, name="upload_pdf"),
-    path("check-status/<str:file_name>/", check_embedding_status, name="check_embedding_status"),
+    path(
+        "check-status/<str:file_name>/",
+        check_embedding_status,
+        name="check_embedding_status",
+    ),
     path("pdfs/all/", list_uploaded_pdfs, name="list_of_uploaded_pdfs"),
 ]

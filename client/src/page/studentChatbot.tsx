@@ -5,6 +5,8 @@ import { CgSpinner } from "react-icons/cg";
 import Navbar from "../components/Navbar";
 import RenderMarkdown from "../components/RenderMarkdown";
 import { MathJaxContext } from "better-react-mathjax";
+import { FaRegTrashAlt } from "react-icons/fa";
+import toast from "react-hot-toast";
 
 interface Message {
   id: Key | null | undefined;
@@ -40,6 +42,7 @@ export default function StudentChatbot() {
   const [personas, setPersonas] = React.useState<any>([]);
   const [selectedPersona, setSelectedPersona] = React.useState<any>({});
   const chatContainerRef = React.useRef<HTMLDivElement>(null);
+  const [memoryCleared, setMemoryCleared] = React.useState<boolean>(false);
 
   React.useEffect(() => {
     fetch("http://localhost:8000/api/teachers/all")
@@ -55,9 +58,20 @@ export default function StudentChatbot() {
         chatContainerRef.current.scrollHeight;
     }
   }, [messages]);
-  ``;
+
+  const clearMemory = () => {
+    fetch("http://localhost:8000/api/students/chat/clear/")
+      .then((res) => res.json())
+      .then((data) => {
+        toast.success(data.message);
+        setMemoryCleared(true);
+        setMessages([]);
+      });
+  };
+
   const handleSubmit = (e: KeyboardEvent<HTMLInputElement>) => {
     e.preventDefault();
+    setMemoryCleared(false);
 
     const userMessage: Message = {
       id: Math.random(),
@@ -77,7 +91,7 @@ export default function StudentChatbot() {
     };
     setMessages((prevMessages) => [...prevMessages, loadingMessage]);
 
-    fetch("http://localhost:8000/api/students/query/", {
+    fetch("http://localhost:8000/api/students/chat/query/", {
       method: "POST",
       body: JSON.stringify({
         teacher_id: selectedPersona.id,
@@ -105,17 +119,13 @@ export default function StudentChatbot() {
   //@ts-ignore
   const handleSwitchPersona = (p) => {
     setSelectedPersona(p);
-    const systemPrompt: Message = {
-      id: Math.random(),
-      role: "System",
-      content: p.prompt,
-    };
+    setMemoryCleared(false);
     const greetingMessage: Message = {
       id: Math.random(),
       role: "AI",
       content: p.greetings,
     };
-    setMessages([systemPrompt, greetingMessage]);
+    setMessages([greetingMessage]);
   };
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -127,6 +137,9 @@ export default function StudentChatbot() {
       <Navbar />
       <section id="chatbot-container" ref={chatContainerRef}>
         {Object.keys(selectedPersona).length === 0 && <EmptyState />}
+        {memoryCleared && (
+          <i id="memory-cleared">Memory Cleared, Start a fresh conversation</i>
+        )}
         <MathJaxContext config={{ loader: { load: ["input/asciimath"] } }}>
           {messages.map(
             (message) =>
@@ -201,7 +214,12 @@ export default function StudentChatbot() {
               </div>
             ))}
           </div>
-          <GoPaperAirplane id="send-icon" />
+          <FaRegTrashAlt
+            id="del-icon"
+            title="Clear Memory"
+            onClick={clearMemory}
+          />
+          <GoPaperAirplane id="send-icon" title="Send Message" />
         </form>
       </section>
     </main>

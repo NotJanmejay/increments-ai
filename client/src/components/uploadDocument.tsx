@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Paper,
   Typography,
@@ -11,6 +11,10 @@ import {
   ListItemText,
   Divider,
   ListItemIcon,
+  Select,
+  MenuItem,
+  InputLabel,
+  FormControl,
 } from "@mui/material";
 import { useDropzone } from "react-dropzone";
 import axios from "axios";
@@ -26,6 +30,12 @@ interface UploadedPdf {
   file_url: string;
 }
 
+interface Teacher {
+  id: number;
+  name: string;
+  subject: string;
+}
+
 const UploadDocument = () => {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -35,6 +45,23 @@ const UploadDocument = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [uploadedPdfs, setUploadedPdfs] = useState<UploadedPdf[]>([]);
   const [selectedFiles, setSelectedFiles] = useState<FileWithPath[]>([]); // State for selected files
+  const [teachers, setTeachers] = useState<Teacher[]>([]); // Teachers list
+  const [selectedTeacher, setSelectedTeacher] = useState<string | null>(null); // Selected teacher
+
+  useEffect(() => {
+    // Fetch teachers when component mounts
+    const fetchTeachers = async () => {
+      try {
+        const response = await axios.get("http://localhost:8000/api/teachers/");
+        setTeachers(response.data);
+      } catch (err) {
+        console.error("Error fetching teachers:", err);
+        setError("Failed to fetch teachers.");
+      }
+    };
+
+    fetchTeachers();
+  }, []);
 
   const onDrop = (acceptedFiles: FileWithPath[]) => {
     const pdfFiles = acceptedFiles.filter(
@@ -50,6 +77,11 @@ const UploadDocument = () => {
   };
 
   const handleUpload = async () => {
+    if (!selectedTeacher) {
+      toast.error("Please select a teacher before uploading.");
+      return;
+    }
+
     if (selectedFiles.length === 0) {
       toast.error("No file selected for upload!");
       return;
@@ -60,6 +92,7 @@ const UploadDocument = () => {
     setError(null);
 
     const formData = new FormData();
+    formData.append("teacher_id", selectedTeacher); // Include selected teacher in the form
     selectedFiles.forEach((file: FileWithPath) => {
       formData.append("file", file);
     });
@@ -140,7 +173,24 @@ const UploadDocument = () => {
   return (
     <div className={`option-container`}>
       <div className="title">Upload a Document</div>
-      <p>Feed a document to our Large Language Model</p>
+      <p style={{ marginBottom: "20px" }}>
+        Feed a document to our Large Language Model
+      </p>
+
+      {/* Teacher Selection Dropdown */}
+      <FormControl fullWidth margin="normal">
+        <InputLabel>Select Teacher Persona</InputLabel>
+        <Select
+          value={selectedTeacher}
+          onChange={(e) => setSelectedTeacher(e.target.value as string)}
+        >
+          {teachers.map((teacher) => (
+            <MenuItem key={teacher.id} value={teacher.id}>
+              {teacher.name} - {teacher.subject}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
 
       <Paper
         {...getRootProps()}
@@ -185,7 +235,7 @@ const UploadDocument = () => {
       </div>
 
       <div className="button-section" style={{ display: "flex", gap: "10px" }}>
-        <button onClick={handleUpload} disabled={uploading}>
+        <button onClick={handleUpload} disabled={uploading || !selectedTeacher}>
           {uploading ? <CircularProgress size={24} /> : "Upload Document"}
         </button>
         <button onClick={handleOpenDrawer}>Uploaded PDFs</button>

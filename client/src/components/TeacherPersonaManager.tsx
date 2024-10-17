@@ -12,6 +12,7 @@ import {
 import toast from "react-hot-toast";
 
 interface TeacherPersona {
+  id: number;
   name: string;
   tagline: string;
   subject: string;
@@ -59,6 +60,7 @@ const TeacherPersonaManager = () => {
   const [isEditing, setIsEditing] = useState<boolean>(false);
 
   // New state variables to track input changes
+  const [id, setId] = useState<number>(-1);
   const [name, setName] = useState<string>("");
   const [tagline, setTagline] = useState<string>("");
   const [subject, setSubject] = useState<string>("");
@@ -84,6 +86,7 @@ const TeacherPersonaManager = () => {
 
   const handleEdit = (teacher: TeacherPersona) => {
     setCurrentPersona(teacher);
+    setId(teacher.id);
     setName(teacher.name);
     setTagline(teacher.tagline);
     setSubject(teacher.subject);
@@ -102,7 +105,7 @@ const TeacherPersonaManager = () => {
   const handleDialogClose = () => {
     setOpenDialog(false);
     setCurrentPersona(null);
-    // Clear input states when dialog closes
+    setId(-1);
     setName("");
     setTagline("");
     setSubject("");
@@ -113,6 +116,7 @@ const TeacherPersonaManager = () => {
     if (isEditing && currentPersona) {
       // Include greetings in updatedPersona
       const updatedPersona: TeacherPersona = {
+        id,
         name,
         tagline,
         subject,
@@ -122,12 +126,12 @@ const TeacherPersonaManager = () => {
 
       try {
         await axios.put(
-          `http://localhost:8000/api/teachers/edit/${currentPersona.name}/`,
+          `http://localhost:8000/api/teachers/edit/${currentPersona.id}/`,
           updatedPersona
         );
         setPersonas((prev) =>
           prev.map((persona) =>
-            persona.name === currentPersona.name ? updatedPersona : persona
+            persona.id === currentPersona.id ? updatedPersona : persona
           )
         );
         toast.success("Teacher persona updated successfully!");
@@ -137,10 +141,10 @@ const TeacherPersonaManager = () => {
     } else if (currentPersona) {
       try {
         await axios.delete(
-          `http://localhost:8000/api/teachers/delete/${currentPersona.name}/`
+          `http://localhost:8000/api/teachers/delete/${currentPersona.id}/`
         );
         setPersonas((prev) =>
-          prev.filter((persona) => persona.name !== currentPersona.name)
+          prev.filter((persona) => persona.id !== currentPersona.id)
         );
         toast.success("Teacher persona deleted successfully!");
       } catch (err) {
@@ -160,7 +164,7 @@ const TeacherPersonaManager = () => {
       <div className="teacher-persona-container">
         {personas.map((teacher) => (
           <PersonaCard
-            key={teacher.name}
+            key={teacher.id}
             teacher={teacher}
             onEdit={() => handleEdit(teacher)}
             onDelete={() => handleDelete(teacher)}
