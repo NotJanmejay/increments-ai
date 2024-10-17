@@ -42,15 +42,20 @@ class Teacher(models.Model):
     greetings = models.CharField(max_length=255)
     prompt = models.CharField(max_length=2000)  # Storing JSON data
     subject = models.CharField(max_length=100)  # New field for subject
+    assistant_id = models.CharField(max_length=1000)
+    vector_store_id = models.CharField(max_length=1000)
 
     def __str__(self):
         return self.name
 
 
-
 class PDFEmbedding(models.Model):
+    teacher_id = models.CharField(max_length=1000)
+    vector_store_id = models.CharField(max_length=1000)
     file_name = models.CharField(max_length=255)  # Store the file name for reference
-    file = models.FileField(upload_to='pdfs/')  # This stores the file path on the file system
+    file = models.FileField(
+        upload_to="pdfs/"
+    )  # This stores the file path on the file system
 
     def __str__(self):
         return self.file_name

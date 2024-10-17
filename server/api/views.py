@@ -10,13 +10,11 @@ from .serializers import (
 )  # Ensure you have a TeacherSerializer, LoginSerializer
 from django.contrib.auth.hashers import check_password
 from rest_framework.parsers import MultiPartParser, FormParser
-from langchain_openai import OpenAIEmbeddings, ChatOpenAI
+from langchain_openai import OpenAIEmbeddings
 from pinecone import Pinecone
 from langchain_pinecone import PineconeVectorStore
 from langchain_community.document_loaders import PyPDFLoader
-from langchain_core.prompts import ChatPromptTemplate
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from django.core.files.storage import default_storage
 from langchain_pinecone import PineconeVectorStore
 from langchain.prompts import PromptTemplate
 from pinecone import Pinecone
@@ -32,14 +30,6 @@ import os
 load_dotenv()
 
 os.environ["REQUESTS_CA_BUNDLE"] = "./certificate.cer"
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-PINECONE_API_KEY = os.getenv("PINECONE_API_KEY")
-
-pc = Pinecone(api_key=PINECONE_API_KEY, ssl_verify=False)
-index = pc.Index("increments")
-embeddings = OpenAIEmbeddings(api_key=OPENAI_API_KEY)
-llm = ChatOpenAI(api_key=OPENAI_API_KEY, model="gpt-4o-mini")
-vector_store = PineconeVectorStore(index=index, embedding=embeddings)
 
 
 def generate_prompt(body):
@@ -207,6 +197,7 @@ def delete_student(request, email):
             {"error": "Student not found."}, status=status.HTTP_404_NOT_FOUND
         )
 
+
 @api_view(["PUT"])
 def edit_teacher(request, name):
     """Edit an existing teacher persona and recalculate the prompt."""
@@ -240,7 +231,7 @@ def edit_teacher(request, name):
             {"message": "Teacher persona updated successfully."},
             status=status.HTTP_200_OK,
         )
-    
+
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
