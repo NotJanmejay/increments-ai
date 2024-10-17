@@ -6,8 +6,8 @@ function AddStudentComponent({ setStudents }: { setStudents: any }) {
     name: "",
     email: "",
     standard: "",
-    contact: "",
-    parentEmail: "",
+    contact_number: "", 
+    parent_email: "", 
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -25,8 +25,8 @@ function AddStudentComponent({ setStudents }: { setStudents: any }) {
         name: studentData.name,
         email: studentData.email,
         standard: studentData.standard,
-        contact_number: studentData.contact,
-        parent_email: studentData.parentEmail,
+        contact_number: studentData.contact_number,
+        parent_email: studentData.parent_email, 
       })
     );
     fetch("http://localhost:8000/api/students/create/", {
@@ -38,8 +38,8 @@ function AddStudentComponent({ setStudents }: { setStudents: any }) {
         name: studentData.name,
         email: studentData.email,
         standard: studentData.standard,
-        contact_number: studentData.contact,
-        parent_email: studentData.parentEmail,
+        contact_number: studentData.contact_number,
+        parent_email: studentData.parent_email, 
       }),
     })
       .then((res) => res.json())
@@ -54,8 +54,8 @@ function AddStudentComponent({ setStudents }: { setStudents: any }) {
       name: "",
       email: "",
       standard: "",
-      contact: "",
-      parentEmail: "",
+      contact_number: "", 
+      parent_email: "",
     });
   };
 
@@ -63,8 +63,8 @@ function AddStudentComponent({ setStudents }: { setStudents: any }) {
     studentData.name &&
     studentData.email &&
     studentData.standard &&
-    studentData.contact &&
-    studentData.parentEmail
+    studentData.contact_number && 
+    studentData.parent_email 
   );
 
   return (
@@ -107,9 +107,9 @@ function AddStudentComponent({ setStudents }: { setStudents: any }) {
         </label>
         <input
           type="tel"
-          name="contact"
+          name="contact_number" 
           placeholder="+91 90165 889044"
-          value={studentData.contact}
+          value={studentData.contact_number} 
           onChange={handleChange}
         />
         <label htmlFor="">
@@ -117,9 +117,9 @@ function AddStudentComponent({ setStudents }: { setStudents: any }) {
         </label>
         <input
           type="email"
-          name="parentEmail"
+          name="parent_email" 
           placeholder="johndoefather@email.com"
-          value={studentData.parentEmail}
+          value={studentData.parent_email} 
           onChange={handleChange}
         />
       </div>
