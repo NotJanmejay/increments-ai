@@ -9,6 +9,7 @@ from .serializers import (
     PDFEmbeddingSerializer,
 )
 from django.contrib.auth.hashers import check_password
+from django.core.cache import cache
 from rest_framework.parsers import MultiPartParser, FormParser
 from textwrap import dedent
 from dotenv import load_dotenv
@@ -16,6 +17,7 @@ import random
 import string
 import json
 import os
+import threading
 from openai import OpenAI
 
 load_dotenv()
@@ -46,7 +48,7 @@ def generate_random_password(length=8):
 
 def generate_assistant(body):
     assistant = client.beta.assistants.create(
-        name=f"{body["name"]}  {body["subject"]}",
+        name=f"{body['name']}  {body['subject']}",
         instructions=generate_prompt(body),
         tools=[{"type": "file_search"}],
         model="gpt-4o-mini",
@@ -260,25 +262,118 @@ def delete_teacher(request, id):
         )
 
 
-# PDF Embeddings
+# Define your status keys
+PROCESSING_KEY_PREFIX = "pdf_status_"
+
+
 @api_view(["POST"])
 @parser_classes([MultiPartParser, FormParser])
-def upload_pdf(request):
-    # TODO
-    pass
+def upload_pdf(request, id):
+    """Upload a PDF file to the selected teacher's vector store."""
+    pdf_file = request.FILES.get("file")
+
+    if not pdf_file:
+        return Response(
+            {"error": "PDF file is required."}, status=status.HTTP_400_BAD_REQUEST
+        )
+
+    # Get the teacher and their vector store ID
+    try:
+        teacher = Teacher.objects.get(id=id)
+        vector_store_id = teacher.vector_store_id
+    except Teacher.DoesNotExist:
+        return Response(
+            {"error": "Teacher not found."}, status=status.HTTP_404_NOT_FOUND
+        )
+
+    # Save PDF to the file system and database
+    pdf_embedding = PDFEmbedding(
+        file_name=pdf_file.name,
+        file=pdf_file,
+        teacher_id=teacher.id,
+        vector_store_id=vector_store_id,
+    )
+    pdf_embedding.save()
+
+    # Start the embedding process in a new thread
+    threading.Thread(
+        target=process_pdf_embedding,
+        args=(pdf_embedding.file.path, pdf_file.name, vector_store_id),
+    ).start()
+
+    return Response(
+        {
+            "message": "Your PDF embedding process has started. It may take some time to complete."
+        },
+        status=status.HTTP_202_ACCEPTED,
+    )
 
 
+def process_pdf_embedding(file_path, file_name, vector_store_id):
+    """Task to create PDF embeddings and store them in the teacher's vector store."""
+    try:
+
+        # Initialize OpenAI and vector store client
+        client = OpenAI()
+        # Upload the file to OpenAI's vector store
+        with open(file_path, "rb") as file_stream:
+            file_batch = client.beta.vector_stores.file_batches.upload_and_poll(
+                vector_store_id=vector_store_id, files=[file_stream]
+            )
+
+        # Check the status of the upload
+        if file_batch.status == "completed":
+            print(f"PDF uploaded and embeddings stored successfully for: {file_name}")
+
+            # Update status to 'completed' in cache
+            cache.set(
+                f"pdf_status_{file_name}",
+                {
+                    "status": "completed",
+                    "message": f"{file_name} uploaded and stored successfully!",
+                },
+                timeout=None,
+            )
+        else:
+            raise Exception("File upload failed.")
+
+    except Exception as e:
+        # Handle errors and update status in cache
+        cache.set(
+            f"pdf_status_{file_name}",
+            {"status": "failed", "message": str(e)},
+            timeout=None,
+        )
+
+
+# For checking the PDF embedding status
 @api_view(["GET"])
 def check_embedding_status(request, file_name):
-    # TODO
-    pass
+    """Check the status of the PDF embedding process."""
+    # Use the correct cache key to get the embedding status
+    status_info = cache.get(f"pdf_status_{file_name}")
+
+    if not status_info:
+        return Response(
+            {"error": f"No embedding process started for {file_name}."},
+            status=status.HTTP_404_NOT_FOUND,
+        )
+
+    # Determine the status code based on the status of the embedding process
+    status_code = (
+        status.HTTP_202_ACCEPTED
+        if status_info.get("status") == "processing"
+        else status.HTTP_200_OK
+    )
+
+    return Response(status_info, status=status_code)
 
 
 @api_view(["GET"])
-def list_uploaded_pdfs(request, teacher_id):
+def list_uploaded_pdfs(request, id):
     """List all uploaded PDFs for a specific teacher with URLs to open/download them."""
     try:
-        teacher = Teacher.objects.get(id=teacher_id)
+        teacher = Teacher.objects.get(id=id)
     except Teacher.DoesNotExist:
         return Response(
             {"error": "Teacher not found."}, status=status.HTTP_404_NOT_FOUND

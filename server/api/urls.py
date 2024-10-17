@@ -28,7 +28,7 @@ urlpatterns = [
     path("teachers/edit/<str:id>/", edit_teacher, name="edit_teacher"),
     path("students/chat/query/", ask_questions, name="ask_questions"),
     path("students/chat/clear/", clear_memory, name="clear_memory"),
-    path("pdf/upload/", upload_pdf, name="upload_pdf"),
+    path("pdf/upload/<int:id>/", upload_pdf, name="upload_pdf"),
     path(
         "check-status/<str:file_name>/",
         check_embedding_status,
