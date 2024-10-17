@@ -42,7 +42,6 @@ export default function StudentChatbot() {
   const [personas, setPersonas] = React.useState<any>([]);
   const [selectedPersona, setSelectedPersona] = React.useState<any>({});
   const chatContainerRef = React.useRef<HTMLDivElement>(null);
-  const [memoryCleared, setMemoryCleared] = React.useState<boolean>(false);
 
   React.useEffect(() => {
     fetch("http://localhost:8000/api/teachers/all")
@@ -64,14 +63,19 @@ export default function StudentChatbot() {
       .then((res) => res.json())
       .then((data) => {
         toast.success(data.message);
-        setMemoryCleared(true);
-        setMessages([]);
+        if (Object.keys(selectedPersona).length !== 0) {
+          const greetingMessage: Message = {
+            id: Math.random(),
+            role: "AI",
+            content: selectedPersona.greetings,
+          };
+          setMessages([greetingMessage]);
+        }
       });
   };
 
   const handleSubmit = (e: KeyboardEvent<HTMLInputElement>) => {
     e.preventDefault();
-    setMemoryCleared(false);
 
     const userMessage: Message = {
       id: Math.random(),
@@ -119,7 +123,6 @@ export default function StudentChatbot() {
   //@ts-ignore
   const handleSwitchPersona = (p) => {
     setSelectedPersona(p);
-    setMemoryCleared(false);
     const greetingMessage: Message = {
       id: Math.random(),
       role: "AI",
@@ -137,9 +140,6 @@ export default function StudentChatbot() {
       <Navbar />
       <section id="chatbot-container" ref={chatContainerRef}>
         {Object.keys(selectedPersona).length === 0 && <EmptyState />}
-        {memoryCleared && (
-          <i id="memory-cleared">Memory Cleared, Start a fresh conversation</i>
-        )}
         <MathJaxContext config={{ loader: { load: ["input/asciimath"] } }}>
           {messages.map(
             (message) =>
