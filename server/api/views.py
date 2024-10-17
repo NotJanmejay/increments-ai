@@ -10,20 +10,8 @@ from .serializers import (
 )
 from django.contrib.auth.hashers import check_password
 from rest_framework.parsers import MultiPartParser, FormParser
-from langchain_openai import OpenAIEmbeddings, ChatOpenAI
-from pinecone import Pinecone
-from langchain_pinecone import PineconeVectorStore
-from langchain_community.document_loaders import PyPDFLoader
-from langchain_core.prompts import ChatPromptTemplate
-from langchain_text_splitters import RecursiveCharacterTextSplitter
-from django.core.files.storage import default_storage
-from langchain_pinecone import PineconeVectorStore
-from langchain.prompts import PromptTemplate
-from pinecone import Pinecone
 from textwrap import dedent
 from dotenv import load_dotenv
-import threading
-from django.core.cache import cache
 import random
 import string
 import json
@@ -33,9 +21,8 @@ from openai import OpenAI
 load_dotenv()
 
 os.environ["REQUESTS_CA_BUNDLE"] = "./certificate.cer"
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
-llm = ChatOpenAI(api_key=OPENAI_API_KEY, model="gpt-4o-mini")
+client = OpenAI()
 
 
 def generate_prompt(body):
@@ -55,11 +42,18 @@ def generate_random_password(length=8):
 
 
 def generate_assistant(body):
-    pass
+    assistant = client.beta.assistants.create(
+        name=f"{body["name"]}  {body["subject"]}",
+        instructions=generate_prompt(body),
+        tools=[{"type": "file_search"}],
+        model="gpt-4o-mini",
+    )
+    return assistant.id
 
 
 def generate_vector_store(body):
-    pass
+    vector_store = client.beta.vector_stores.create(name=f"{body["name"]}'s Store")
+    return vector_store.id
 
 
 @api_view(["POST"])
@@ -142,20 +136,17 @@ def create_teacher(request):
     prompt = generate_prompt(body)
     vector_store_id = generate_vector_store(body)
     assistant_id = generate_assistant(body)
-    body.update({"prompt": prompt})
+    body.update(
+        {
+            "prompt": prompt,
+            "vector_store_id": vector_store_id,
+            "assistant_id": assistant_id,
+        }
+    )
 
     serializer = TeacherSerializer(data=body)
     if serializer.is_valid():
         teacher = serializer.save()
-
-        # Create a vector store for the teacher using OpenAI
-        client = OpenAI()
-        vector_store = client.beta.vector_stores.create(
-            name=f"teacher_{teacher.id}_store"
-        )
-
-        # Save vector store ID to the teacher model
-        teacher.vector_store_id = vector_store.id
         teacher.save()
 
         return Response(
