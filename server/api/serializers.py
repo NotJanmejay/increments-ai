@@ -42,4 +42,4 @@ class TeacherSerializer(serializers.ModelSerializer):
 class PDFEmbeddingSerializer(serializers.ModelSerializer):
     class Meta:
         model = PDFEmbedding
-        fields = ["file_name", "file"]
+        fields = ['id', 'teacher_id', 'vector_store_id', 'file_name', 'file']
