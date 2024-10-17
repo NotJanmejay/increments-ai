@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from .models import Student, Teacher, PDFEmbedding
 from django.contrib.auth.hashers import make_password
-import os 
+import os
 
 
 class StudentSerializer(serializers.ModelSerializer):
@@ -36,10 +36,19 @@ class LoginSerializer(serializers.Serializer):  # Not ModelSerializer
 class TeacherSerializer(serializers.ModelSerializer):
     class Meta:
         model = Teacher
-        fields = ["name", "tagline", "subject", "description", "greetings", "prompt"]
+        fields = [
+            "name",
+            "tagline",
+            "subject",
+            "description",
+            "greetings",
+            "prompt",
+            "assistant_id",
+            "vector_store_id",
+        ]
 
 
 class PDFEmbeddingSerializer(serializers.ModelSerializer):
     class Meta:
         model = PDFEmbedding
-        fields = ["file_name", "file"]
+        fields = ["file_name", "file", "teacher_id", "vector_store_id"]

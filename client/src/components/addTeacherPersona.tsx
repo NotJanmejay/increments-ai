@@ -28,16 +28,6 @@ function AddTeacherPersona() {
   };
 
   const handleAddTeacher = () => {
-    console.log(
-      JSON.stringify({
-        name: teacherData.name,
-        tagline: teacherData.tagline,
-        subject: teacherData.subject,
-        description: teacherData.description,
-        greetings: teacherData.greetings,
-      })
-    );
-
     fetch("http://localhost:8000/api/teachers/create/", {
       method: "POST",
       headers: {
@@ -51,20 +41,31 @@ function AddTeacherPersona() {
         greetings: teacherData.greetings,
       }),
     })
-      .then((res) => res.json())
+      .then((res) => {
+        if (res.status !== 201) {
+          throw new Error(`Request failed with status ${res.status}`);
+        } else {
+          return res.json();
+        }
+      })
       .then((data) => {
-        console.log(data);
-        toast.success("Teacher Added Successfully.");
+        toast.success(`${teacherData.name} added to records`);
+        setTeacherData({
+          name: "",
+          tagline: "",
+          subject: "",
+          description: "",
+          greetings: "",
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+        toast.error(
+          "Something went wrong while adding teacher, check out console logs for more information"
+        );
       });
 
     // Reset the form fields
-    setTeacherData({
-      name: "",
-      tagline: "",
-      subject: "",
-      description: "",
-      greetings: "",
-    });
   };
 
   return (

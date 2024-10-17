@@ -7,7 +7,7 @@ from .serializers import (
     TeacherSerializer,
     LoginSerializer,
     PDFEmbeddingSerializer,
-)  # Ensure you have a TeacherSerializer, LoginSerializer
+)
 from django.contrib.auth.hashers import check_password
 from rest_framework.parsers import MultiPartParser, FormParser
 from langchain_openai import OpenAIEmbeddings
@@ -52,7 +52,14 @@ def generate_random_password(length=8):
     return "".join(random.choice(characters) for _ in range(length))
 
 
-# Student Views
+def generate_assistant(body):
+    pass
+
+
+def generate_vector_store(body):
+    pass
+
+
 @api_view(["POST"])
 def create_student(request):
     """Create a new student and return the generated password."""
@@ -89,6 +96,7 @@ def get_students(request):
         )  # Return serialized data
 
 
+#! Not being used till now
 @api_view(["POST"])
 def login_student(request):
     """Authenticate student and return student data if credentials match."""
@@ -126,13 +134,12 @@ def login_student(request):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-# Teacher Views
-
-
 @api_view(["POST"])
 def create_teacher(request):
     body = json.loads(request.body)
     prompt = generate_prompt(body)
+    vector_store_id = generate_vector_store(body)
+    assistant_id = generate_assistant(body)
     body.update({"prompt": prompt})
     serializer = TeacherSerializer(data=body)
     if serializer.is_valid():
@@ -152,9 +159,10 @@ def get_teachers(request):
 
 
 @api_view(["GET"])
-def get_teacher(request, name):
+def get_teacher(request, id):
+    # TODO : Get Teacher based on ID
     try:
-        teacher = Teacher.objects.get(name=name)  # Adjust based on your primary key
+        teacher = Teacher.objects.get(id=id)  # Adjust based on your primary key
         serializer = TeacherSerializer(teacher)
         return Response(serializer.data, status=status.HTTP_200_OK)
     except Teacher.DoesNotExist:
@@ -199,22 +207,19 @@ def delete_student(request, email):
 
 
 @api_view(["PUT"])
-def edit_teacher(request, name):
-    """Edit an existing teacher persona and recalculate the prompt."""
+def edit_teacher(request, id):
+    # TODO : Convert to edit using ID
     try:
-        teacher = Teacher.objects.get(name=name)
+        teacher = Teacher.objects.get(id=id)
     except Teacher.DoesNotExist:
         return Response(
             {"error": "Teacher not found."}, status=status.HTTP_404_NOT_FOUND
         )
 
-    # Deserialize and update
     serializer = TeacherSerializer(teacher, data=request.data, partial=True)
     if serializer.is_valid():
-        # Save the teacher instance first
         teacher = serializer.save()
 
-        # Generate a new prompt based on updated teacher information
         updated_body = {
             "name": teacher.name,
             "tagline": teacher.tagline,
@@ -223,7 +228,6 @@ def edit_teacher(request, name):
         }
         new_prompt = generate_prompt(updated_body)
 
-        # Update the teacher's prompt
         teacher.prompt = new_prompt
         teacher.save()
 
@@ -237,9 +241,10 @@ def edit_teacher(request, name):
 
 # Delete teacher based on name
 @api_view(["DELETE"])
-def delete_teacher(request, name):
+def delete_teacher(request, id):
+    # TODO : Convert to deletetion using ID
     try:
-        teacher = Teacher.objects.get(name=name)
+        teacher = Teacher.objects.get(id=id)
         teacher.delete()
         return Response(
             {"message": "Teacher deleted successfully."}, status=status.HTTP_200_OK
@@ -250,116 +255,18 @@ def delete_teacher(request, name):
         )
 
 
-# Define your status keys
-PROCESSING_KEY_PREFIX = "pdf_status_"
-
-
 # PDF Embeddings
 @api_view(["POST"])
 @parser_classes([MultiPartParser, FormParser])
 def upload_pdf(request):
-    """Upload a PDF file and create embeddings."""
-    pdf_file = request.FILES.get("file")  # Ensure the key matches your request
-
-    if not pdf_file:
-        return Response(
-            {"error": "PDF file is required."}, status=status.HTTP_400_BAD_REQUEST
-        )
-
-    # Save the file to the file system and store the file path in the database
-    pdf_embedding = PDFEmbedding(file_name=pdf_file.name, file=pdf_file)
-    pdf_embedding.save()
-
-    # Store the initial status in the cache
-    cache.set(
-        f"pdf_status_{pdf_file.name}",
-        {"status": "processing", "message": "PDF embedding process has started."},
-        timeout=None,
-    )  # No expiration
-
-    # Start the embedding process in a new thread
-    threading.Thread(
-        target=process_pdf_embedding, args=(pdf_embedding.file.path, pdf_file.name)
-    ).start()
-
-    # Respond immediately with an enhanced message
-    return Response(
-        {
-            "message": "Your PDF embedding process has started! Please be patient, as it may take a little while to complete."
-        },
-        status=status.HTTP_202_ACCEPTED,
-    )
+    # TODO
+    pass
 
 
-def process_pdf_embedding(file_path, file_name):
-    """Task to create PDF embeddings synchronously and store them."""
-    try:
-        # Load and read the PDF document using the file path
-        file_loader = PyPDFLoader(file_path)
-        docs = file_loader.load()
-
-        # Chunk the document into smaller parts
-        chunk_size = 800
-        overlap_size = 50
-        text_splitter = RecursiveCharacterTextSplitter(
-            chunk_size=chunk_size, chunk_overlap=overlap_size
-        )
-        chunked_data = text_splitter.split_documents(docs)
-
-        # Initialize OpenAI embeddings and Pinecone
-        embeddings = OpenAIEmbeddings(api_key=OPENAI_API_KEY)
-        pc = Pinecone(api_key=PINECONE_API_KEY, ssl_verify=False)
-        index = pc.Index("increments")  # Your Pinecone index name
-
-        vector_store = PineconeVectorStore(index=index, embedding=embeddings)
-
-        # Add embeddings to Pinecone
-        for i, doc in enumerate(chunked_data):
-            doc_id = f"doc_{i}"  # Create a unique ID for each chunk
-            vector_store.add_documents(
-                documents=[doc], ids=[doc_id]
-            )  # Await for async processing
-
-        # Log the success message
-        print(f"PDF uploaded and embeddings stored successfully for: {file_name}")
-
-        # Update the status to 'completed'
-        cache.set(
-            f"pdf_status_{file_name}",
-            {
-                "status": "completed",
-                "message": f"{file_name} uploaded and embeddings stored successfully!",
-            },
-            timeout=None,
-        )
-
-    except Exception as e:
-        # Update the status to 'failed' in case of any error
-        cache.set(
-            f"pdf_status_{file_name}",
-            {"status": "failed", "message": str(e)},
-            timeout=None,
-        )
-
-
-# For check the pdf embedding status
 @api_view(["GET"])
 def check_embedding_status(request, file_name):
-    """Check the status of the PDF embedding process."""
-    status_info = cache.get(f"{PROCESSING_KEY_PREFIX}{file_name}")
-
-    if not status_info:
-        return Response(
-            {"error": f"No uploading process started for {file_name}"},
-            status=status.HTTP_404_NOT_FOUND,
-        )
-
-    status_code = (
-        status.HTTP_202_ACCEPTED
-        if status_info.get("status") == "processing"
-        else status.HTTP_200_OK
-    )
-    return Response(status_info, status=status_code)
+    # TODO
+    pass
 
 
 @api_view(["GET"])
@@ -383,49 +290,7 @@ def list_uploaded_pdfs(request):
     return Response(pdf_list)
 
 
-def create_message_history(messages):
-    history = []
-    for msg in messages:
-        if msg["role"] == "System":
-            history.append(("system", msg["content"]))
-        elif msg["role"] == "AI":
-            history.append(("ai", msg["content"]))
-        else:
-            history.append(("human", msg["content"]))
-    return history
-
-
 @api_view(["POST"])
 def ask_questions(request):
-    body = json.loads(request.body)
-    history = create_message_history(body["messages"])
-    prompt = body["prompt"]
-
-    def retrieve_query(query, k=2):
-        matching_results = vector_store.similarity_search(query, k=k)
-        return matching_results
-
-    doc_search = retrieve_query(prompt)
-    combined_input = f"\n\nRetrieved Documents:\n" + "\n".join(
-        [doc.page_content for doc in doc_search]
-    )
-
-    rag_prompt_template = """
-    Use the following pieces of context to answer the question at the end. If you don't know the answer, just say that you don't know, don't try to make up an answer.
-    {context}
-    Question: {question}
-    Helpful Answer:
-    """
-
-    rag_prompt = PromptTemplate.from_template(rag_prompt_template)
-
-    history.append(
-        ("human", rag_prompt.format(context=combined_input, question=prompt))
-    )
-
-    llm_res = llm.invoke(history)
-
-    return Response(
-        {"response": llm_res.content},
-        status=status.HTTP_200_OK,
-    )
+    # TODO
+    pass

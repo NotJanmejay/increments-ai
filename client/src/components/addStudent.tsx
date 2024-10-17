@@ -20,15 +20,6 @@ function AddStudentComponent({ setStudents }: { setStudents: any }) {
 
   const handleAddStudent = () => {
     setStudents((prevStudents: any) => [...prevStudents, studentData]);
-    console.log(
-      JSON.stringify({
-        name: studentData.name,
-        email: studentData.email,
-        standard: studentData.standard,
-        contact_number: studentData.contact,
-        parent_email: studentData.parentEmail,
-      })
-    );
     fetch("http://localhost:8000/api/students/create/", {
       method: "POST",
       headers: {
@@ -42,21 +33,32 @@ function AddStudentComponent({ setStudents }: { setStudents: any }) {
         parent_email: studentData.parentEmail,
       }),
     })
-      .then((res) => res.json())
+      .then((res) => {
+        if (res.status !== 201) {
+          throw new Error(`Request failed with status ${res.status}`);
+        } else {
+          return res.json();
+        }
+      })
       .then((data) => {
-        console.log(data);
+        setStudentData({
+          name: "",
+          email: "",
+          standard: "",
+          contact: "",
+          parentEmail: "",
+        });
         toast.success(
           "Student Added Successfully. Password Generated is : " +
             data.generated_password
         );
+      })
+      .catch((err) => {
+        toast.error(
+          "Something went wrong while adding student, check console log for more information"
+        );
+        console.log(err);
       });
-    setStudentData({
-      name: "",
-      email: "",
-      standard: "",
-      contact: "",
-      parentEmail: "",
-    });
   };
 
   const isDisabled = !(
