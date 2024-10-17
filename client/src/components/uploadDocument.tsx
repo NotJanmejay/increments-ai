@@ -3,8 +3,6 @@ import {
   Paper,
   Typography,
   CircularProgress,
-  Snackbar,
-  Alert,
   Drawer,
   List,
   ListItem,
@@ -13,12 +11,11 @@ import {
   ListItemIcon,
   Select,
   MenuItem,
-  InputLabel,
   FormControl,
 } from "@mui/material";
 import { useDropzone } from "react-dropzone";
 import axios from "axios";
-import DescriptionIcon from "@mui/icons-material/Description"; // Icon for PDF document
+import DescriptionIcon from "@mui/icons-material/Description";
 import toast from "react-hot-toast";
 
 interface FileWithPath extends File {
@@ -39,20 +36,20 @@ interface Teacher {
 const UploadDocument = () => {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [embeddingStarted, setEmbeddingStarted] = useState(false);
-  const [embeddingComplete, setEmbeddingComplete] = useState(false);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [uploadedPdfs, setUploadedPdfs] = useState<UploadedPdf[]>([]);
-  const [selectedFiles, setSelectedFiles] = useState<FileWithPath[]>([]); // State for selected files
-  const [teachers, setTeachers] = useState<Teacher[]>([]); // Teachers list
-  const [selectedTeacher, setSelectedTeacher] = useState<string | null>(null); // Selected teacher
+  const [selectedFiles, setSelectedFiles] = useState<FileWithPath[]>([]);
+  const [teachers, setTeachers] = useState<Teacher[]>([]);
+  const [selectedTeacher, setSelectedTeacher] = useState<string | null>(null);
 
   useEffect(() => {
     // Fetch teachers when component mounts
     const fetchTeachers = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/api/teachers/");
+        const response = await axios.get(
+          "http://localhost:8000/api/teachers/all"
+        );
         setTeachers(response.data);
       } catch (err) {
         console.error("Error fetching teachers:", err);
@@ -92,14 +89,14 @@ const UploadDocument = () => {
     setError(null);
 
     const formData = new FormData();
-    formData.append("teacher_id", selectedTeacher); // Include selected teacher in the form
+    formData.append("teacher_id", selectedTeacher);
     selectedFiles.forEach((file: FileWithPath) => {
       formData.append("file", file);
     });
 
     try {
-      const response = await axios.post(
-        "http://localhost:8000/api/pdf/upload/",
+      await axios.post(
+        `http://localhost:8000/api/pdf/upload/${selectedTeacher}/`,
         formData,
         {
           headers: {
@@ -107,16 +104,7 @@ const UploadDocument = () => {
           },
         }
       );
-
-      console.log("Upload successful:", response.data);
-      const fileName = selectedFiles[0].name; // Check the first file's status
-
-      // Show Snackbar that embedding has started
-      setEmbeddingStarted(true);
-      setSuccessMessage("Embedding process started for: " + fileName);
-
-      // Start checking embedding status
-      checkEmbeddingStatus(fileName);
+      toast.success("File Uploaded Successfully!");
     } catch (err: any) {
       console.error("Upload error:", err.response?.data);
       setError(
@@ -125,27 +113,6 @@ const UploadDocument = () => {
     } finally {
       setUploading(false);
     }
-  };
-
-  const checkEmbeddingStatus = async (fileName: string) => {
-    const interval = setInterval(async () => {
-      try {
-        const response = await axios.get(
-          `http://localhost:8000/api/check-status/${fileName}/`
-        );
-        if (response.status === 200) {
-          setEmbeddingComplete(true);
-          setSuccessMessage(response.data.message); // Capture the success message
-          clearInterval(interval);
-        }
-      } catch (err) {
-        console.error("Error checking embedding status:", err);
-        //@ts-ignore
-        if (err.response?.status === 404) {
-          // Handle not found status if necessary
-        }
-      }
-    }, 3000); // Check every 3 seconds
   };
 
   const fetchUploadedPdfs = async () => {
@@ -178,8 +145,8 @@ const UploadDocument = () => {
       </p>
 
       {/* Teacher Selection Dropdown */}
+      <label htmlFor="">Select Teacher Persona</label>
       <FormControl fullWidth margin="normal">
-        <InputLabel>Select Teacher Persona</InputLabel>
         <Select
           value={selectedTeacher}
           onChange={(e) => setSelectedTeacher(e.target.value as string)}
@@ -238,7 +205,9 @@ const UploadDocument = () => {
         <button onClick={handleUpload} disabled={uploading || !selectedTeacher}>
           {uploading ? <CircularProgress size={24} /> : "Upload Document"}
         </button>
-        <button onClick={handleOpenDrawer}>Uploaded PDFs</button>
+        <button onClick={handleOpenDrawer} disabled={!selectedTeacher}>
+          Uploaded PDFs
+        </button>
       </div>
 
       {error && (
@@ -248,28 +217,8 @@ const UploadDocument = () => {
       )}
 
       {/* Snackbar for embedding started */}
-      <Snackbar
-        open={embeddingStarted}
-        autoHideDuration={6000}
-        onClose={() => setEmbeddingStarted(false)}
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
-      >
-        <Alert onClose={() => setEmbeddingStarted(false)} severity="info">
-          {successMessage}
-        </Alert>
-      </Snackbar>
 
       {/* Snackbar for embedding completion */}
-      <Snackbar
-        open={embeddingComplete}
-        autoHideDuration={6000}
-        onClose={() => setEmbeddingComplete(false)}
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
-      >
-        <Alert onClose={() => setEmbeddingComplete(false)} severity="success">
-          {successMessage || "Embedding successful! Your document is ready."}
-        </Alert>
-      </Snackbar>
 
       {/* Drawer for uploaded PDFs */}
       <Drawer

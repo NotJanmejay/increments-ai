@@ -19,6 +19,8 @@ export default function Navbar() {
         src={isStudentPath ? StudentLogo : TeacherLogo}
         alt="Increment Logo"
         id="increment-logo"
+        onClick={() => (window.location.href = "/")}
+        style={{ cursor: "pointer" }}
       />
       <div className="nav-contents">
         {page === "student" ? (
