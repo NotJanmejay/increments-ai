@@ -10,8 +10,15 @@ function AddTeacherPersona() {
     greetings: "",
   });
 
+  const isDisabled = !(
+    teacherData.name &&
+    teacherData.tagline &&
+    teacherData.subject &&
+    teacherData.description &&
+    teacherData.greetings
+  );
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
     setTeacherData({
@@ -28,7 +35,7 @@ function AddTeacherPersona() {
         subject: teacherData.subject,
         description: teacherData.description,
         greetings: teacherData.greetings,
-      }),
+      })
     );
 
     fetch("http://localhost:8000/api/teachers/create/", {
@@ -61,14 +68,16 @@ function AddTeacherPersona() {
   };
 
   return (
-    <div className="option-container">
+    <div className={`option-container`}>
       <div className="title">Add Teacher Persona</div>
       <p>
         Provide teacher-specific personas to give students the feeling of school
         from anywhere.
       </p>
       <div id="input-fields">
-        <label htmlFor="name">Name</label>
+        <label htmlFor="name">
+          Name <sup>*</sup>
+        </label>
         <input
           type="text"
           name="name"
@@ -76,7 +85,9 @@ function AddTeacherPersona() {
           value={teacherData.name}
           onChange={handleChange}
         />
-        <label htmlFor="tagline">Tagline</label>
+        <label htmlFor="tagline">
+          Tagline <sup>*</sup>
+        </label>
         <input
           type="text"
           name="tagline"
@@ -84,7 +95,9 @@ function AddTeacherPersona() {
           value={teacherData.tagline}
           onChange={handleChange}
         />
-        <label htmlFor="subject">Subject</label>
+        <label htmlFor="subject">
+          Subject <sup>*</sup>
+        </label>
         <input
           type="text"
           name="subject"
@@ -92,14 +105,18 @@ function AddTeacherPersona() {
           value={teacherData.subject}
           onChange={handleChange}
         />
-        <label htmlFor="description">Description</label>
+        <label htmlFor="description">
+          Description <sup>*</sup>
+        </label>
         <textarea
           name="description"
           placeholder="How would you describe this teacher"
           value={teacherData.description}
           onChange={handleChange}
         />
-        <label htmlFor="greetings">Greetings</label>
+        <label htmlFor="greetings">
+          Greetings <sup>*</sup>
+        </label>
         <input
           type="text"
           name="greetings"
@@ -109,7 +126,13 @@ function AddTeacherPersona() {
         />
       </div>
       <div className="button-section">
-        <button onClick={handleAddTeacher}>Add Persona</button>
+        <button
+          onClick={handleAddTeacher}
+          disabled={isDisabled}
+          title={isDisabled ? "Please add all details first" : ""}
+        >
+          Add Persona
+        </button>
       </div>
     </div>
   );

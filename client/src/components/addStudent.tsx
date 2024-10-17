@@ -5,7 +5,7 @@ function AddStudentComponent({ setStudents }: { setStudents: any }) {
   const [studentData, setStudentData] = React.useState({
     name: "",
     email: "",
-    standard: "", // Changed from 'class' to 'standard'
+    standard: "",
     contact: "",
     parentEmail: "",
   });
@@ -24,7 +24,7 @@ function AddStudentComponent({ setStudents }: { setStudents: any }) {
       JSON.stringify({
         name: studentData.name,
         email: studentData.email,
-        standard: studentData.standard, // Ensure consistency here
+        standard: studentData.standard,
         contact_number: studentData.contact,
         parent_email: studentData.parentEmail,
       })
@@ -37,7 +37,7 @@ function AddStudentComponent({ setStudents }: { setStudents: any }) {
       body: JSON.stringify({
         name: studentData.name,
         email: studentData.email,
-        standard: studentData.standard, // Ensure consistency here
+        standard: studentData.standard,
         contact_number: studentData.contact,
         parent_email: studentData.parentEmail,
       }),
@@ -53,55 +53,84 @@ function AddStudentComponent({ setStudents }: { setStudents: any }) {
     setStudentData({
       name: "",
       email: "",
-      standard: "", // Changed from 'class' to 'standard'
+      standard: "",
       contact: "",
       parentEmail: "",
     });
   };
 
+  const isDisabled = !(
+    studentData.name &&
+    studentData.email &&
+    studentData.standard &&
+    studentData.contact &&
+    studentData.parentEmail
+  );
+
   return (
-    <div className="option-container">
+    <div className={`option-container`}>
       <div className="title">Add Student</div>
       <p>Add your students here to generate their credentials</p>
       <div id="input-fields">
+        <label htmlFor="">
+          Name <sup>*</sup>
+        </label>
         <input
           type="text"
           name="name"
-          placeholder="Name"
+          placeholder="John Doe"
           value={studentData.name}
           onChange={handleChange}
         />
+        <label htmlFor="">
+          Email <sup>*</sup>
+        </label>
         <input
           type="email"
           name="email"
-          placeholder="Email Address"
+          placeholder="johndoe@email.com"
           value={studentData.email}
           onChange={handleChange}
         />
+        <label htmlFor="">
+          Class <sup>*</sup>
+        </label>
         <input
           type="text"
-          name="standard" // Updated name here
-          placeholder="Class"
-          value={studentData.standard} // Updated here
+          name="standard"
+          placeholder="12th"
+          value={studentData.standard}
           onChange={handleChange}
         />
+        <label htmlFor="">
+          Contact Number<sup>*</sup>
+        </label>
         <input
           type="tel"
           name="contact"
-          placeholder="Contact Number"
+          placeholder="+91 90165 889044"
           value={studentData.contact}
           onChange={handleChange}
         />
+        <label htmlFor="">
+          Parent Email Address<sup>*</sup>
+        </label>
         <input
           type="email"
           name="parentEmail"
-          placeholder="Parent Email Address"
+          placeholder="johndoefather@email.com"
           value={studentData.parentEmail}
           onChange={handleChange}
         />
       </div>
       <div className="button-section">
-        <button onClick={handleAddStudent}>Add Student</button>
+        <button
+          onClick={handleAddStudent}
+          disabled={isDisabled}
+          title={isDisabled ? "Please add all details first" : ""}
+        >
+          Add Student
+        </button>
       </div>
     </div>
   );

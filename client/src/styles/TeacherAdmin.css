@@ -22,7 +22,7 @@
 
 /* Left pane */
 #left-pane {
-  padding-left: 36px;
+  padding: 0 36px;
   display: flex;
   flex-direction: column;
   height: 100vh;
@@ -40,7 +40,13 @@
 
 #left-pane p {
   cursor: pointer;
-  transition: opacity 0.9s cubic-bezier(0.075, 0.82, 0.165, 1);
+  transition: all 400ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+#left-pane p:not(.selected):hover {
+  cursor: pointer;
+  font-weight: 600;
+  padding: 5px;
 }
 
 /* Right pane */
@@ -78,6 +84,10 @@
   gap: 0.5rem;
 }
 
+#input-fields label {
+  display: flex;
+}
+
 #input-fields input {
   border: 1px solid var(--accent-secondary);
   border-radius: 0.4rem;
@@ -109,15 +119,20 @@
   font-weight: 600;
   font-size: 0.9rem;
   cursor: pointer;
+  transition: all 400ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  min-width: 200px;
 }
 
 .button-section button.delete-btn {
   background-color: var(--danger);
 }
 
-.button-section button:hover {
-  opacity: 0.97;
-  transition: all 400ms cubic-bezier(0.075, 0.82, 0.165, 1);
+.button-section button:hover:not(:disabled) {
+  box-shadow: 5px 5px #042f359f;
+}
+
+.button-section button.delete-btn:hover {
+  box-shadow: 5px 5px #e03e299f;
 }
 
 .option-container label {
@@ -148,6 +163,7 @@
   width: 100vw;
   top: 0;
   color: var(--text);
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
 }
 
 #teacher-navbar .nav-contents p {
@@ -170,14 +186,14 @@
 .teacher-persona-container {
   margin-top: 2rem;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1rem;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
 }
 
 .teacher-card {
-  width: 100%; /* Ensure cards take full width of grid */
-  max-width: 25vw; /* Optional: limit max width of cards */
-  height: 40vh; /* Set a fixed height */
+  width: 100%;
+  /* max-width: 25vw; */
+  height: 50vh;
   border: 1px solid var(--secondary);
   background-color: white;
   padding: 2rem;
@@ -185,14 +201,14 @@
   display: flex;
   flex-direction: column;
   color: var(--secondary);
-  justify-content: space-between; /* Ensure button section stays at the bottom */
+  justify-content: space-between;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Optional: add a shadow */
 }
 
 .teacher-card .button-section {
   display: flex;
   gap: 0.9rem;
-  margin-top: 1rem; /* Add some space between description and buttons */
+  margin-top: 1.5rem; /* Add some space between description and buttons */
 }
 .teacher-card .name {
   font-weight: bold;
@@ -206,33 +222,22 @@
 
 .teacher-card label {
   font-weight: 600;
-  font-size: 0.8rem;
+  font-size: 1rem;
 }
 
 .teacher-card .tagline {
-  font-size: 0.8rem;
+  font-size: 1rem;
   margin-bottom: 16px;
 }
 
 .teacher-card .description {
-  font-size: 0.8rem;
-  flex-grow: 1;
-  overflow: clip;
-  text-overflow: ellipsis;
+  font-size: 1rem;
+  height: auto; /* Adjust if needed */
   display: -webkit-box;
-  -webkit-line-clamp: 4;
   -webkit-box-orient: vertical;
-}
-
-.teacher-card button {
-  padding: 8px 12px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.teacher-card button:hover {
-  opacity: 0.8;
+  -webkit-line-clamp: 4;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .table {
@@ -253,4 +258,17 @@
 .button-section button {
   border-radius: 100px;
   padding: 16px 24px;
+}
+
+.selected {
+  font-weight: 600;
+  background-color: var(--accent-primary);
+  color: var(--secondary);
+  padding: 10px 10px;
+  border-radius: 8px;
+}
+
+button[disabled] {
+  cursor: not-allowed;
+  opacity: 0.4;
 }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import {
   Dialog,
@@ -48,7 +48,7 @@ function PersonaCard({
   );
 }
 
-const TeacherPersonaManager: React.FC = () => {
+const TeacherPersonaManager = () => {
   const [personas, setPersonas] = useState<TeacherPersona[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -154,7 +154,7 @@ const TeacherPersonaManager: React.FC = () => {
   if (error) return <div>{error}</div>;
 
   return (
-    <div className="option-container">
+    <div className={`option-container`}>
       <div className="title">Manage Teacher Persona</div>
       <p>Manage all the added teacher personas here</p>
       <div className="teacher-persona-container">

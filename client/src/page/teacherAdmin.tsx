@@ -37,6 +37,7 @@ function TeacherAdmin() {
         <div id="left-pane">
           <h1>Teacher Portal</h1>
           <p
+            className={currentSection === "add-student" ? "selected" : ""}
             onClick={() => {
               localStorage.setItem("window", "add-student");
               setCurrentSection("add-student");
@@ -45,6 +46,7 @@ function TeacherAdmin() {
             Add Students
           </p>
           <p
+            className={currentSection === "upload-documents" ? "selected" : ""}
             onClick={() => {
               localStorage.setItem("window", "upload-documents");
               setCurrentSection("upload-documents");
@@ -53,6 +55,7 @@ function TeacherAdmin() {
             Upload Documents
           </p>
           <p
+            className={currentSection === "student-manager" ? "selected" : ""}
             onClick={() => {
               localStorage.setItem("window", "student-manager");
               setCurrentSection("student-manager");
@@ -61,6 +64,7 @@ function TeacherAdmin() {
             Student Manager
           </p>
           <p
+            className={currentSection === "teacher-persona" ? "selected" : ""}
             onClick={() => {
               localStorage.setItem("window", "teacher-persona");
               setCurrentSection("teacher-persona");
@@ -69,6 +73,9 @@ function TeacherAdmin() {
             Add Teacher Persona
           </p>
           <p
+            className={
+              currentSection === "teacher-persona-manager" ? "selected" : ""
+            }
             onClick={() => {
               localStorage.setItem("window", "teacher-persona-manager");
               setCurrentSection("teacher-persona-manager");

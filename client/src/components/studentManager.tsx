@@ -85,7 +85,7 @@ function StudentManager({ students, setStudents }: StudentManagerProps) {
   };
 
   return (
-    <div className="option-container">
+    <div className={`option-container `}>
       <div className="title">Manage Students</div>
       <p>Manage all your added students, delete, edit or make other changes</p>
 

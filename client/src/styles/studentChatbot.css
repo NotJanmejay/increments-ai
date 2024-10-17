@@ -89,8 +89,6 @@
 }
 
 .persona-selector.static {
-  height: 30px;
-  width: 30px;
   border-radius: 50%;
   display: grid;
   place-items: center;
@@ -102,14 +100,9 @@
   transition: all 500ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-.persona-selector.static:hover {
-  transform: translateY(-5px);
-}
-
-.persona-selector.selected {
+.persona-selector.selected.static {
   background-color: black;
   color: white;
-  transform: translateY(-5px);
 }
 
 .persona-selector {

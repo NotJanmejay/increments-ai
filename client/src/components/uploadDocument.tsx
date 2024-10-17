@@ -1,9 +1,8 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Paper,
   Typography,
   CircularProgress,
-  Button,
   Snackbar,
   Alert,
   Drawer,
@@ -15,8 +14,8 @@ import {
 } from "@mui/material";
 import { useDropzone } from "react-dropzone";
 import axios from "axios";
-import UploadIcon from "@mui/icons-material/Upload"; // Icon for upload
 import DescriptionIcon from "@mui/icons-material/Description"; // Icon for PDF document
+import toast from "react-hot-toast";
 
 interface FileWithPath extends File {
   path?: string;
@@ -27,7 +26,7 @@ interface UploadedPdf {
   file_url: string;
 }
 
-const UploadDocument: React.FC = () => {
+const UploadDocument = () => {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [embeddingStarted, setEmbeddingStarted] = useState(false);
@@ -52,7 +51,7 @@ const UploadDocument: React.FC = () => {
 
   const handleUpload = async () => {
     if (selectedFiles.length === 0) {
-      setError("No files selected for upload.");
+      toast.error("No file selected for upload!");
       return;
     }
 
@@ -139,7 +138,7 @@ const UploadDocument: React.FC = () => {
   });
 
   return (
-    <div className="option-container">
+    <div className={`option-container`}>
       <div className="title">Upload a Document</div>
       <p>Feed a document to our Large Language Model</p>
 
@@ -186,19 +185,17 @@ const UploadDocument: React.FC = () => {
       </div>
 
       <div className="button-section" style={{ display: "flex", gap: "10px" }}>
-        <button
-          onClick={handleUpload}
-          disabled={uploading}
-          startIcon={<UploadIcon />} // Add upload icon
-        >
+        <button onClick={handleUpload} disabled={uploading}>
           {uploading ? <CircularProgress size={24} /> : "Upload Document"}
         </button>
-        <button onClick={handleOpenDrawer} sx={{ marginLeft: "10px" }}>
-          Uploaded PDFs
-        </button>
+        <button onClick={handleOpenDrawer}>Uploaded PDFs</button>
       </div>
 
-      {error && <p className="error-message">{error}</p>}
+      {error && (
+        <p className="error-message" style={{ marginTop: "10px" }}>
+          {error}
+        </p>
+      )}
 
       {/* Snackbar for embedding started */}
       <Snackbar
@@ -230,7 +227,10 @@ const UploadDocument: React.FC = () => {
         open={drawerOpen}
         onClose={() => setDrawerOpen(false)}
         PaperProps={{
-          sx: { width: "300px", backgroundColor: "#f7f7f7" },
+          sx: {
+            width: "300px",
+            backgroundColor: "white",
+          },
         }}
       >
         <div
@@ -242,8 +242,9 @@ const UploadDocument: React.FC = () => {
             variant="h6"
             sx={{
               padding: "10px 16px",
-              backgroundColor: "#3f51b5",
-              color: "#fff",
+              backgroundColor: "var(--secondary)",
+              color: "var(--text)",
+              fontFamily: "var(--font-primary)",
             }}
           >
             Uploaded PDFs
@@ -256,7 +257,11 @@ const UploadDocument: React.FC = () => {
                   component="a"
                   href={pdf.file_url}
                   key={index}
-                  sx={{ color: "#000", padding: "10px 16px" }}
+                  sx={{
+                    color: "#000",
+                    padding: "10px 16px",
+                    fontFamily: "var(--font-primary)",
+                  }}
                 >
                   <ListItemText
                     primary={pdf.file_name}
