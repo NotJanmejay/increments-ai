@@ -29,7 +29,7 @@ function AddTeacherPersona() {
   };
 
   const handleAddTeacher = () => {
-    fetch(`${HOST}/api/teachers/create/`, {
+    fetch(`${HOST}/v1/teachers/create/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -45,7 +45,7 @@ export default function StudentChatbot() {
   const chatContainerRef = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
-    fetch(`${HOST}/api/teachers/all`)
+    fetch(`${HOST}/v1/teachers/all`)
       .then((res) => res.json())
       .then((data) => {
         setPersonas(data);
@@ -60,7 +60,7 @@ export default function StudentChatbot() {
   }, [messages]);
 
   const clearMemory = () => {
-    fetch(`${HOST}/api/students/chat/clear/`)
+    fetch(`${HOST}/v1/students/chat/clear/`)
       .then((res) => res.json())
       .then((data) => {
         toast.success(data.message);
@@ -96,7 +96,7 @@ export default function StudentChatbot() {
     };
     setMessages((prevMessages) => [...prevMessages, loadingMessage]);
 
-    fetch(`${HOST}/api/students/chat/query/`, {
+    fetch(`${HOST}/v1/students/chat/query/`, {
       method: "POST",
       body: JSON.stringify({
         teacher_id: selectedPersona.id,

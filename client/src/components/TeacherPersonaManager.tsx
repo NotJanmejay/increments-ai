@@ -71,7 +71,7 @@ const TeacherPersonaManager = () => {
   useEffect(() => {
     const fetchPersonas = async () => {
       try {
-        const response = await axios.get(`${HOST}/api/teachers/all/`);
+        const response = await axios.get(`${HOST}/v1/teachers/all/`);
         setPersonas(response.data);
       } catch (err) {
         setError("Failed to fetch teacher personas.");
@@ -125,7 +125,7 @@ const TeacherPersonaManager = () => {
 
       try {
         await axios.put(
-          `${HOST}/api/teachers/edit/${currentPersona.id}/`,
+          `${HOST}/v1/teachers/edit/${currentPersona.id}/`,
           updatedPersona
         );
         setPersonas((prev) =>
@@ -139,7 +139,7 @@ const TeacherPersonaManager = () => {
       }
     } else if (currentPersona) {
       try {
-        await axios.delete(`${HOST}/api/teachers/delete/${currentPersona.id}/`);
+        await axios.delete(`${HOST}/v1/teachers/delete/${currentPersona.id}/`);
         setPersonas((prev) =>
           prev.filter((persona) => persona.id !== currentPersona.id)
         );

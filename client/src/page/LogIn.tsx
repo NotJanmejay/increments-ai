@@ -26,7 +26,7 @@ const StudentLogin: React.FC = () => {
 
     try {
       const response = await axios.post(
-        `${HOST}/api/students/login/`,
+        `${HOST}/v1/students/login/`,
         credentials
       );
       console.log("Login successful:", response.data);

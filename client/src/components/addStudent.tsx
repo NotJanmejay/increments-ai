@@ -30,7 +30,7 @@ function AddStudentComponent({ setStudents }: { setStudents: any }) {
         parent_email: studentData.parent_email,
       })
     );
-    fetch(`${HOST}/api/students/create/`, {
+    fetch(`${HOST}/v1/students/create/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

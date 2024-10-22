@@ -52,7 +52,7 @@ function StudentManager({ students, setStudents }: StudentManagerProps) {
 
     try {
       await axios.put(
-        `${HOST}/api/students/edit/${editStudent.email}/`,
+        `${HOST}/v1/students/edit/${editStudent.email}/`,
         editStudent
       );
       handleClose();
@@ -73,7 +73,7 @@ function StudentManager({ students, setStudents }: StudentManagerProps) {
     );
 
     try {
-      await axios.delete(`${HOST}/api/students/delete/${email}/`);
+      await axios.delete(`${HOST}/v1/students/delete/${email}/`);
 
       setStudents((prevStudents) =>
         prevStudents.filter((s) => s.email !== email)

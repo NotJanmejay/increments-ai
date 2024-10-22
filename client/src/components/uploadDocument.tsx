@@ -48,7 +48,7 @@ const UploadDocument = () => {
     // Fetch teachers when component mounts
     const fetchTeachers = async () => {
       try {
-        const response = await axios.get(`${HOST}/api/teachers/all`);
+        const response = await axios.get(`${HOST}/v1/teachers/all`);
         setTeachers(response.data);
       } catch (err) {
         console.error("Error fetching teachers:", err);
@@ -94,7 +94,7 @@ const UploadDocument = () => {
     });
 
     try {
-      await axios.post(`${HOST}/api/pdf/upload/${selectedTeacher}/`, formData, {
+      await axios.post(`${HOST}/v1/pdf/upload/${selectedTeacher}/`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -113,7 +113,7 @@ const UploadDocument = () => {
 
   const fetchUploadedPdfs = async () => {
     try {
-      const response = await axios.get(`${HOST}/api/pdfs/all/`);
+      const response = await axios.get(`${HOST}/v1/pdfs/all/`);
       setUploadedPdfs(response.data);
     } catch (err) {
       console.error("Error fetching PDFs:", err);
