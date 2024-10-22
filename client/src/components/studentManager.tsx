@@ -18,6 +18,7 @@ import { FaRegTrashCan } from "react-icons/fa6";
 import React, { useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { HOST } from "../../config";
 
 interface Student {
   name: string;
@@ -51,7 +52,7 @@ function StudentManager({ students, setStudents }: StudentManagerProps) {
 
     try {
       await axios.put(
-        `http://localhost:8000/api/students/edit/${editStudent.email}/`,
+        `${HOST}/api/students/edit/${editStudent.email}/`,
         editStudent
       );
       handleClose();
@@ -72,7 +73,7 @@ function StudentManager({ students, setStudents }: StudentManagerProps) {
     );
 
     try {
-      await axios.delete(`http://localhost:8000/api/students/delete/${email}/`);
+      await axios.delete(`${HOST}/api/students/delete/${email}/`);
 
       setStudents((prevStudents) =>
         prevStudents.filter((s) => s.email !== email)

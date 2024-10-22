@@ -17,6 +17,7 @@ import { useDropzone } from "react-dropzone";
 import axios from "axios";
 import DescriptionIcon from "@mui/icons-material/Description";
 import toast from "react-hot-toast";
+import { HOST } from "../../config";
 
 interface FileWithPath extends File {
   path?: string;
@@ -47,9 +48,7 @@ const UploadDocument = () => {
     // Fetch teachers when component mounts
     const fetchTeachers = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:8000/api/teachers/all"
-        );
+        const response = await axios.get(`${HOST}/api/teachers/all`);
         setTeachers(response.data);
       } catch (err) {
         console.error("Error fetching teachers:", err);
@@ -95,17 +94,13 @@ const UploadDocument = () => {
     });
 
     try {
-      await axios.post(
-        `http://localhost:8000/api/pdf/upload/${selectedTeacher}/`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      await axios.post(`${HOST}/api/pdf/upload/${selectedTeacher}/`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
       toast.success("File Uploaded Successfully!");
-      setSelectedFiles([])
+      setSelectedFiles([]);
     } catch (err: any) {
       console.error("Upload error:", err.response?.data);
       setError(
@@ -118,7 +113,7 @@ const UploadDocument = () => {
 
   const fetchUploadedPdfs = async () => {
     try {
-      const response = await axios.get("http://localhost:8000/api/pdfs/all/");
+      const response = await axios.get(`${HOST}/api/pdfs/all/`);
       setUploadedPdfs(response.data);
     } catch (err) {
       console.error("Error fetching PDFs:", err);

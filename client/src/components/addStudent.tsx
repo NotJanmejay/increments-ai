@@ -1,5 +1,6 @@
 import React from "react";
 import toast from "react-hot-toast";
+import { HOST } from "../../config";
 
 function AddStudentComponent({ setStudents }: { setStudents: any }) {
   const [studentData, setStudentData] = React.useState({
@@ -29,7 +30,7 @@ function AddStudentComponent({ setStudents }: { setStudents: any }) {
         parent_email: studentData.parent_email,
       })
     );
-    fetch("http://localhost:8000/api/students/create/", {
+    fetch(`${HOST}/api/students/create/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

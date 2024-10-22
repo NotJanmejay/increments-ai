@@ -1,5 +1,6 @@
 import React from "react";
-import toast from "react-hot-toast"; // Uncomment if you want to use toast
+import toast from "react-hot-toast";
+import { HOST } from "../../config";
 
 function AddTeacherPersona() {
   const [teacherData, setTeacherData] = React.useState({
@@ -28,7 +29,7 @@ function AddTeacherPersona() {
   };
 
   const handleAddTeacher = () => {
-    fetch("http://localhost:8000/api/teachers/create/", {
+    fetch(`${HOST}/api/teachers/create/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -48,7 +49,7 @@ function AddTeacherPersona() {
           return res.json();
         }
       })
-      .then((data) => {
+      .then((_) => {
         toast.success(`${teacherData.name} added to records`);
         setTeacherData({
           name: "",

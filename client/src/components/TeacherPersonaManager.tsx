@@ -10,6 +10,7 @@ import {
   TextField,
 } from "@mui/material";
 import toast from "react-hot-toast";
+import { HOST } from "../../config";
 
 interface TeacherPersona {
   id: number;
@@ -70,9 +71,7 @@ const TeacherPersonaManager = () => {
   useEffect(() => {
     const fetchPersonas = async () => {
       try {
-        const response = await axios.get(
-          "http://127.0.0.1:8000/api/teachers/all/"
-        );
+        const response = await axios.get(`${HOST}/api/teachers/all/`);
         setPersonas(response.data);
       } catch (err) {
         setError("Failed to fetch teacher personas.");
@@ -126,7 +125,7 @@ const TeacherPersonaManager = () => {
 
       try {
         await axios.put(
-          `http://localhost:8000/api/teachers/edit/${currentPersona.id}/`,
+          `${HOST}/api/teachers/edit/${currentPersona.id}/`,
           updatedPersona
         );
         setPersonas((prev) =>
@@ -140,9 +139,7 @@ const TeacherPersonaManager = () => {
       }
     } else if (currentPersona) {
       try {
-        await axios.delete(
-          `http://localhost:8000/api/teachers/delete/${currentPersona.id}/`
-        );
+        await axios.delete(`${HOST}/api/teachers/delete/${currentPersona.id}/`);
         setPersonas((prev) =>
           prev.filter((persona) => persona.id !== currentPersona.id)
         );

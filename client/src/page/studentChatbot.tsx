@@ -7,6 +7,7 @@ import RenderMarkdown from "../components/RenderMarkdown";
 import { MathJaxContext } from "better-react-mathjax";
 import { FaRegTrashAlt } from "react-icons/fa";
 import toast from "react-hot-toast";
+import { HOST } from "../../config";
 
 interface Message {
   id: Key | null | undefined;
@@ -44,7 +45,7 @@ export default function StudentChatbot() {
   const chatContainerRef = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
-    fetch("http://localhost:8000/api/teachers/all")
+    fetch(`${HOST}/api/teachers/all`)
       .then((res) => res.json())
       .then((data) => {
         setPersonas(data);
@@ -59,7 +60,7 @@ export default function StudentChatbot() {
   }, [messages]);
 
   const clearMemory = () => {
-    fetch("http://localhost:8000/api/students/chat/clear/")
+    fetch(`${HOST}/api/students/chat/clear/`)
       .then((res) => res.json())
       .then((data) => {
         toast.success(data.message);
@@ -95,7 +96,7 @@ export default function StudentChatbot() {
     };
     setMessages((prevMessages) => [...prevMessages, loadingMessage]);
 
-    fetch("http://localhost:8000/api/students/chat/query/", {
+    fetch(`${HOST}/api/students/chat/query/`, {
       method: "POST",
       body: JSON.stringify({
         teacher_id: selectedPersona.id,

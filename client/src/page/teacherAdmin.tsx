@@ -6,6 +6,7 @@ import TeacherPersonaManager from "../components/TeacherPersonaManager";
 import "../styles/TeacherAdmin.css";
 import React from "react";
 import Navbar from "../components/Navbar";
+import { HOST } from "../../config";
 
 function TeacherAdmin() {
   const [currentSection, setCurrentSection] =
@@ -25,7 +26,7 @@ function TeacherAdmin() {
       setCurrentSection("teacher-persona-manager");
     }
 
-    fetch("http://localhost:8000/api/students/all")
+    fetch(`${HOST}/api/students/all`)
       .then((res) => res.json())
       .then((data) => setStudents(data));
   }, []);

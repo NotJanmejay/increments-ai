@@ -406,9 +406,6 @@ def clear_memory(request):
 def ask_questions(request):
     body = json.loads(request.body)
     global session_manager
-    #! DEBUG
-    print(session_manager)
-    #! DEBUG
 
     prompt = body["prompt"]
     teacher_id = body["teacher_id"]

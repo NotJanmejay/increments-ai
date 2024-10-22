@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios"; // Import Axios for API requests
 import "../styles/LoginStyle.css";
 import { useNavigate } from "react-router-dom";
+import { HOST } from "../../config";
 
 const StudentLogin: React.FC = () => {
   const [credentials, setCredentials] = useState({
@@ -25,8 +26,8 @@ const StudentLogin: React.FC = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:8000/api/students/login/",
-        credentials,
+        `${HOST}/api/students/login/`,
+        credentials
       );
       console.log("Login successful:", response.data);
 
@@ -44,7 +45,7 @@ const StudentLogin: React.FC = () => {
     } catch (error: any) {
       console.error("Login error:", error.response?.data);
       setError(
-        error.response?.data?.detail || "Login failed. Please try again.",
+        error.response?.data?.detail || "Login failed. Please try again."
       );
     }
   };
