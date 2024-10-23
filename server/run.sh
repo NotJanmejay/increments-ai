@@ -1,15 +1,33 @@
 #!/bin/bash
 
-LOG_FILE="server.logs"
+# Check if a virtual environment folder exists, if not, create one
+if [ ! -d "venv" ]; then
+    echo "Creating virtual environment..."
+    python3 -m venv .venv
+fi
 
-# Redirect stdout (>) and stderr (2>) to the log file
-exec > >(tee -a "$LOG_FILE") 2>&1
+# Activate the virtual environment
+echo "Activating virtual environment..."
+source venv/bin/activate
 
-echo "Make migrations"
+# Install the required packages from requirements.txt
+if [ -f "requirements.txt" ]; then
+    echo "Installing dependencies from requirements.txt..."
+    pip install -r requirements.txt
+else
+    echo "requirements.txt not found!"
+    exit 1
+fi
+
+# Remove existing migration files for the 'api' app
+echo "Removing existing migrations for 'api' app..."
+find ./api/migrations/ -name "*.py" ! -name "__init__.py" -delete
+
+# Run Django migrations for a clean start
+echo "Making migrations and running Django migrations for 'api' app..."
 python manage.py makemigrations api
-python manage.py makemigrations 
 python manage.py migrate api
-python manage.py migrate
 
-echo "Running Server"
+# Start the Django development server
+echo "Starting Django server..."
 python manage.py runserver
