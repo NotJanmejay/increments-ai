@@ -25,7 +25,7 @@ SECRET_KEY = "django-insecure-=@dn&9fo3s!vaqj9c(8jr$wc=bvn1pdcbufoi)_5%h%_a=)ohx
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["increments.msbctechnologies.ai"]
 
 # Application definition
 
@@ -125,5 +125,5 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 import os
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = "/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
