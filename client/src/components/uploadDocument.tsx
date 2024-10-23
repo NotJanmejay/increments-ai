@@ -48,11 +48,11 @@ const UploadDocument = () => {
     // Fetch teachers when component mounts
     const fetchTeachers = async () => {
       try {
-        const response = await axios.get(`${HOST}/v1/teachers/all`);
-        setTeachers(response.data);
+        const response = await axios.get(`${HOST}/v1/teachers/all/`);
+        if (typeof response.data != "string") setTeachers(response.data);
+        else setError("Failed to fetch teachers.");
       } catch (err) {
         console.error("Error fetching teachers:", err);
-        setError("Failed to fetch teachers.");
       }
     };
 

@@ -26,7 +26,7 @@ function TeacherAdmin() {
       setCurrentSection("teacher-persona-manager");
     }
 
-    fetch(`${HOST}/v1/students/all`)
+    fetch(`${HOST}/v1/students/all/`)
       .then((res) => res.json())
       .then((data) => setStudents(data));
   }, []);

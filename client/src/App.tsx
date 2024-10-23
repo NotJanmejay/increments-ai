@@ -1,6 +1,5 @@
 import TeacherAdmin from "./page/teacherAdmin";
 import StudentChatbot from "./page/studentChatbot";
-import LogIn from "./page/LogIn";
 import { Routes, Route, Link } from "react-router-dom";
 import Logo from "./assets/logo-on-green.png";
 import "./App.css";

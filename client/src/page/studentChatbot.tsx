@@ -45,7 +45,7 @@ export default function StudentChatbot() {
   const chatContainerRef = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
-    fetch(`${HOST}/v1/teachers/all`)
+    fetch(`${HOST}/v1/teachers/all/`)
       .then((res) => res.json())
       .then((data) => {
         setPersonas(data);
