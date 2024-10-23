@@ -30,7 +30,7 @@ function App() {
         <Route element={<Home />} path="/" />
         <Route element={<TeacherAdmin />} path="/teacher" />
         <Route element={<StudentChatbot />} path="/student" />
-        <Route element={<LogIn />} path="/login" />
+        <Route element={<p>404, Page not Found</p>} path="*" />
       </Routes>
     </>
   );
