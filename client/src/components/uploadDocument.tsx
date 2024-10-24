@@ -197,7 +197,11 @@ const UploadDocument = () => {
         )}
       </div>
 
-      <div className="button-section" style={{ display: "flex", gap: "10px" }}>
+      <div
+        id="upload-documents"
+        className="button-section"
+        style={{ display: "flex", gap: "10px" }}
+      >
         <button onClick={handleUpload} disabled={uploading || !selectedTeacher}>
           {uploading ? <CircularProgress size={24} /> : "Upload Document"}
         </button>
@@ -211,12 +215,6 @@ const UploadDocument = () => {
           {error}
         </p>
       )}
-
-      {/* Snackbar for embedding started */}
-
-      {/* Snackbar for embedding completion */}
-
-      {/* Drawer for uploaded PDFs */}
       <Drawer
         anchor="right"
         open={drawerOpen}

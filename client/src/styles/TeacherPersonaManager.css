@@ -20,7 +20,7 @@
 .teacher-card {
   width: 100%; /* Ensure cards take full width of grid */
   max-width: 300px; /* Optional: limit max width of cards */
-  height: 350px; /* Set a fixed height */
+  min-height: 350px; /* Set a fixed height */
   border: 1px solid rgba(112, 128, 144, 0.3);
   padding: 10px;
   border-radius: 8px;

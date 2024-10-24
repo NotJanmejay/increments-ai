@@ -8,6 +8,10 @@ import { MathJaxContext } from "better-react-mathjax";
 import { FaRegTrashAlt } from "react-icons/fa";
 import toast from "react-hot-toast";
 import { HOST } from "../../config";
+import { GiHamburgerMenu } from "react-icons/gi";
+import { FaArrowRight } from "react-icons/fa6";
+import { motion } from "framer-motion";
+import { RxCross2 } from "react-icons/rx";
 
 interface Message {
   id: Key | null | undefined;
@@ -43,6 +47,13 @@ export default function StudentChatbot() {
   const [personas, setPersonas] = React.useState<any>([]);
   const [selectedPersona, setSelectedPersona] = React.useState<any>({});
   const chatContainerRef = React.useRef<HTMLDivElement>(null);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] =
+    React.useState<boolean>(false);
+
+  const mobileNavbarVariant = {
+    hidden: { opacity: 0, x: "100%" },
+    visible: { opacity: 1, x: 0 },
+  };
 
   React.useEffect(() => {
     fetch(`${HOST}/v1/teachers/all/`)
@@ -75,8 +86,8 @@ export default function StudentChatbot() {
       });
   };
 
-  const handleSubmit = (e: KeyboardEvent<HTMLInputElement>) => {
-    e.preventDefault();
+  const handleSubmit = (e?: KeyboardEvent<HTMLInputElement>) => {
+    e?.preventDefault();
 
     const userMessage: Message = {
       id: Math.random(),
@@ -139,6 +150,42 @@ export default function StudentChatbot() {
   return (
     <main className="chatbot-page">
       <Navbar />
+      {/* Only Visible in Mobile Device */}
+      <div className="menu-btn" onClick={() => setIsMobileMenuOpen((p) => !p)}>
+        {isMobileMenuOpen ? (
+          <RxCross2 size={20} />
+        ) : (
+          <GiHamburgerMenu size={20} />
+        )}
+      </div>
+      <motion.div
+        id="student-chatbot-mobile-helper"
+        animate={isMobileMenuOpen ? "visible" : "hidden"}
+        key="animate-on-toggle"
+        initial={false}
+        variants={mobileNavbarVariant}
+      >
+        <h1>Increments AI</h1>
+
+        <h2>Personas</h2>
+        {personas.map((p: any) => {
+          return (
+            <p
+              onClick={() => {
+                setIsMobileMenuOpen(false);
+                handleSwitchPersona(p);
+              }}
+            >
+              {p.name} | {p.subject}
+            </p>
+          );
+        })}
+
+        <button onClick={() => (window.location.href = "/teacher")}>
+          Teacher Admin <FaArrowRight />
+        </button>
+      </motion.div>
+
       <section id="chatbot-container" ref={chatContainerRef}>
         {Object.keys(selectedPersona).length === 0 && <EmptyState />}
         <MathJaxContext config={{ loader: { load: ["input/asciimath"] } }}>
@@ -220,7 +267,11 @@ export default function StudentChatbot() {
             title="Clear Memory"
             onClick={clearMemory}
           />
-          <GoPaperAirplane id="send-icon" title="Send Message" />
+          <GoPaperAirplane
+            id="send-icon"
+            title="Send Message"
+            onClick={() => handleSubmit()}
+          />
         </form>
       </section>
     </main>

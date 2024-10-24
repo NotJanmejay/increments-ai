@@ -50,7 +50,6 @@
   padding: 0px 5px;
 }
 
-/* Right pane */
 #right-pane {
   margin-top: 10vh;
   padding: 0 200px;
@@ -273,4 +272,102 @@
 button[disabled] {
   cursor: not-allowed;
   opacity: 0.4;
+}
+
+@media only screen and (max-width: 768px) {
+  #left-pane {
+    display: none;
+  }
+
+  #teacher-navbar {
+    display: none;
+  }
+
+  #teacher-page {
+    padding: 0;
+  }
+
+  #right-pane {
+    margin: 0;
+    padding: 0;
+  }
+
+  .option-container {
+    min-width: 98vw;
+  }
+
+  .button-section button {
+    min-width: 82vw;
+  }
+
+  .option-container .title {
+    font-size: 2rem;
+  }
+
+  .option-container p {
+    font-size: 0.8rem;
+  }
+
+  #teacher-page #student-chatbot-mobile-helper h1 {
+    margin-bottom: 2rem;
+  }
+
+  #teacher-page #student-chatbot-mobile-helper p {
+    font-size: 0.9rem;
+    background-color: #d7d7d7;
+    margin-bottom: 10px;
+    color: var(--secondary);
+  }
+
+  #teacher-page #student-chatbot-mobile-helper p.selected {
+    background-color: var(--secondary);
+    color: white;
+  }
+
+  #upload-documents button {
+    font-size: 0.8rem;
+    min-width: 0;
+  }
+
+  .teacher-persona-container {
+    grid-template-columns: 1fr;
+  }
+
+  .teacher-persona-container .teacher-card {
+    width: 82vw;
+    min-height: fit-content;
+  }
+
+  .teacher-persona-container .button-section {
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .teacher-persona-container .button-section button {
+    padding: 0.6rem 0.4rem;
+    min-width: 0;
+  }
+
+  #input-fields input::placeholder {
+    font-size: 12px;
+  }
+
+  #input-fields textarea::placeholder {
+    font-size: 12px;
+  }
+}
+
+@media only screen and (max-width: 1280px) {
+  .teacher-card {
+    width: 25vw;
+    height: 500px;
+  }
+
+  .button-section {
+    flex-direction: column;
+  }
+
+  .button-section button {
+    padding: 10px 15px;
+  }
 }
