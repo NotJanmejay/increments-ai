@@ -39,7 +39,9 @@ find ./api/migrations/ -name "*.py" ! -name "__init__.py" -delete
 # Run Django migrations for a clean start
 echo "Making migrations and running Django migrations for 'api' app..."
 python manage.py makemigrations api
+python manage.py makemigrations
 python manage.py migrate api
+python manage.py migrate
 
 # Start the Django development server
 echo "Starting Django server..."
